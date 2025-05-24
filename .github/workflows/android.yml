@@ -7,6 +7,30 @@ on:
   workflow_dispatch: # This enables manual runs from the Actions tab
 
 jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Xcode Command Line Tools
+        run: sudo xcode-select --install
+
+      - name: Set Xcode Developer Directory
+        run: sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
+
+      - name: Verify xcrun
+        run: xcrun --version
+
+      - name: Install Rust
+        run: rustup install stable
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install Tauri CLI
+        run: cargo install tauri-cli
+
   publish-tauri-mobile:
     permissions:
       contents: write
@@ -52,7 +76,6 @@ jobs:
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
-          # Add both mobile targets
           targets: ${{ matrix.target == 'android' && 'aarch64-linux-android' || (matrix.target == 'ios' && 'aarch64-apple-ios') }}
 
       - name: Rust cache
@@ -62,6 +85,13 @@ jobs:
 
       - name: install frontend dependencies
         run: pnpm install
+
+      - name: Setup JDK 17
+        if: matrix.target == 'android'
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
       - name: Install Android NDK and SDK (Android only)
         if: matrix.target == 'android'
