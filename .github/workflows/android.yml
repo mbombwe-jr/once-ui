@@ -60,7 +60,8 @@ jobs:
             unzip \
             libssl-dev \
             pkg-config \
-            libudev-dev
+            libudev-dev \
+            gcc-aarch64-linux-gnu
 
       - name: Install pnpm globally
         run: npm install -g pnpm
@@ -102,6 +103,12 @@ jobs:
       - name: Install cargo-ndk
         run: cargo install cargo-ndk
         working-directory: ./src-tauri
+
+      - name: Configure Cargo linker for Android
+        run: |
+          mkdir -p .cargo
+          echo '[target.aarch64-linux-android]' > .cargo/config.toml
+          echo 'linker = "aarch64-linux-gnu-gcc"' >> .cargo/config.toml
 
       - name: Build Android app
         run: |
