@@ -1,0 +1,94 @@
+name: 'publish'
+
+on:
+  push:
+    branches:
+      - release
+  workflow_dispatch: # This enables manual runs from the Actions tab
+
+jobs:
+  publish-tauri-mobile:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: 'ubuntu-22.04'
+            target: 'android'
+            args: '--target aarch64-linux-android'
+          - platform: 'ubuntu-22.04'
+            target: 'ios'
+            args: '--target aarch64-apple-ios'
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install dependencies (ubuntu only)
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.0-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            wget \
+            unzip \
+            libssl-dev \
+            pkg-config \
+            libudev-dev
+
+      - name: Install pnpm globally
+        run: npm install -g pnpm
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: 'pnpm'
+
+      - name: install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          # Add both mobile targets
+          targets: ${{ matrix.target == 'android' && 'aarch64-linux-android' || (matrix.target == 'ios' && 'aarch64-apple-ios') }}
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: install frontend dependencies
+        run: pnpm install
+
+      - name: Install Android NDK and SDK (Android only)
+        if: matrix.target == 'android'
+        uses: android-actions/setup-android@v3
+
+      - name: Install cargo-ndk (Android only)
+        if: matrix.target == 'android'
+        run: cargo install cargo-ndk
+
+      - name: Install iOS dependencies (iOS only)
+        if: matrix.target == 'ios'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxml2-dev libz-dev libssl-dev libcurl4-openssl-dev
+
+      - name: Set up iOS cross (iOS only)
+        if: matrix.target == 'ios'
+        run: cargo install cargo-xcode
+
+      - name: Build and Publish with Tauri Action (Android/iOS)
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: app-mobile-v__VERSION__-${{ matrix.target }}
+          releaseName: 'App Mobile v__VERSION__ (${{ matrix.target }})'
+          releaseBody: 'See the assets to download this version and install.'
+          releaseDraft: true
+          prerelease: false
+          args: ${{ matrix.args }}
