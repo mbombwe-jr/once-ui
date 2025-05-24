@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - release
+  workflow_dispatch: # This enables manual runs from the Actions tab
 
 jobs:
   publish-tauri:
