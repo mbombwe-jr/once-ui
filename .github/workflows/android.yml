@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - release
-  workflow_dispatch: # Enables manual runs from the Actions tab
+  workflow_dispatch:
 
 jobs:
   build:
@@ -120,4 +120,4 @@ jobs:
           releaseDraft: true
           prerelease: false
           args: --target aarch64-linux-android
-        working-directory: ./src-tauri
+        # working-directory: ./src-tauri   # <-- REMOVED
