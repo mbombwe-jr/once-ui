@@ -105,6 +105,7 @@ jobs:
 
       - name: Build Android app
         run: |
+          export RUSTFLAGS="-C linker=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang"
           cargo clean
           cargo ndk -t arm64-v8a build --release
         working-directory: ./src-tauri
