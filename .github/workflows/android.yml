@@ -60,8 +60,7 @@ jobs:
             unzip \
             libssl-dev \
             pkg-config \
-            libudev-dev \
-            gcc-aarch64-linux-gnu
+            libudev-dev
 
       - name: Install pnpm globally
         run: npm install -g pnpm
@@ -104,18 +103,17 @@ jobs:
         run: cargo install cargo-ndk
         working-directory: ./src-tauri
 
-      - name: Configure Cargo linker for Android
+      - name: Configure Android NDK environment
         run: |
-          mkdir -p .cargo
-          echo '[target.aarch64-linux-android]' > .cargo/config.toml
-          echo 'linker = "aarch64-linux-gnu-gcc"' >> .cargo/config.toml
+          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/25.2.9519653" >> $GITHUB_ENV
 
       - name: Build Android app
         run: |
-          export RUSTFLAGS="-C linker=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang"
           cargo clean
           cargo ndk -t arm64-v8a build --release
         working-directory: ./src-tauri
+        env:
+          ANDROID_NDK_HOME: ${{ env.ANDROID_NDK_HOME }}
 
       - name: Build and Publish with Tauri Action
         uses: tauri-apps/tauri-action@v0
