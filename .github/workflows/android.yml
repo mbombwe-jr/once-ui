@@ -30,6 +30,7 @@ jobs:
 
       - name: Install Tauri CLI
         run: cargo install tauri-cli
+        working-directory: ./src-tauri
 
   publish-tauri-android:
     permissions:
@@ -88,11 +89,13 @@ jobs:
 
       - name: Install cargo-ndk
         run: cargo install cargo-ndk
+        working-directory: ./src-tauri
 
       - name: Build Android app
         run: |
           cargo clean
           cargo build --target aarch64-linux-android
+        working-directory: ./src-tauri
 
       - name: Build and Publish with Tauri Action
         uses: tauri-apps/tauri-action@v0
@@ -105,3 +108,4 @@ jobs:
           releaseDraft: true
           prerelease: false
           args: --target aarch64-linux-android
+        working-directory: ./src-tauri
