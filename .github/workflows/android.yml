@@ -1,4 +1,4 @@
-name: publish
+name: 'publish'
 
 on:
   push:
@@ -14,16 +14,23 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install Xcode Command Line Tools
-        run: sudo xcode-select --install || true # Added error handling for already installed tools
+        run: |
+          if ! xcode-select -p > /dev/null; then
+            sudo xcode-select --install
+          fi
 
       - name: Set Xcode Developer Directory
-        run: sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+        run: sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
 
       - name: Verify xcrun
         run: xcrun --version
 
       - name: Install Rust
-        run: rustup install stable
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          override: true
 
       - name: Install pnpm
         run: npm install -g pnpm
@@ -33,11 +40,12 @@ jobs:
         working-directory: ./src-tauri
 
   publish-tauri-android:
+    needs: build
     permissions:
       contents: write
     runs-on: ubuntu-22.04
     steps:
-      - name: Checkout repository # Fixed: Added name for consistency
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Install dependencies
@@ -60,14 +68,56 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: lts/*
-          cache: pnpm # Fixed: Removed quotes for consistency
+          node-version: 'lts/*'
+          cache: 'pnpm'
 
       - name: Install Rust and target
-        run: |
-          rustup install stable
-          rustup target add aarch64-linux-android
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: aarch64-linux-android
+          profile: minimal
+          override: true
 
       - name: Rust cache
         uses: swatinem/rust-cache@v2
-       
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: Install frontend dependencies
+        run: pnpm install
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Install Android SDK and NDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install specific NDK version
+        run: sdkmanager --install "ndk;23.1.7779620"
+
+      - name: Install cargo-ndk
+        run: cargo install cargo-ndk
+        working-directory: ./src-tauri
+
+      - name: Build Android app
+        run: |
+          cargo clean
+          cargo build --target aarch64-linux-android
+        working-directory: ./src-tauri
+
+      - name: Build and Publish with Tauri Action
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: app-mobile-v__VERSION__-android
+          releaseName: 'App Mobile v__VERSION__ (android)'
+          releaseBody: 'See the assets to download this version and install.'
+          releaseDraft: true
+          prerelease: false
+          args: --target aarch64-linux-android
+        working-directory: ./src-tauri
