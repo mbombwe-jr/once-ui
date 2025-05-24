@@ -56,6 +56,9 @@ jobs:
           rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
           cargo install tauri-cli --version "^2.0.0"
 
+      - name: init android app
+        run: tauri android init
+
       - name: Build Android app
         run: pnpm tauri android build
         env:
