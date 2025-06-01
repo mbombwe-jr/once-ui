@@ -1,0 +1,188 @@
+"use client";
+import React, { useState, useRef, useEffect } from 'react'
+import {Button, Line, Flex, Dialog, Spinner, Card, Column, Heading, Input, Icon, Media, Row, Tag, Text, TiltFx} from "@/once-ui/components";
+
+interface AnnouncementType {
+    id: string;
+    type: string;
+    title: string;
+    description: string;
+    fullDescription: string;
+    date: string;
+    amount: string
+;   image: string;
+}
+
+type Announcement = {
+  id: number;
+  type: string;
+  title: string;
+  description: string;
+  fullDescription: string;
+  date: string;
+  amount: string
+  image: string;
+};
+
+{/*sample data
+INSERT INTO transactions (id, type, title, description, fullDescription, date, image, amount) VALUES
+(41, 'academic', 'Mid-Semester Exams Begin', 'All students must check the updated exam schedule.', 'Exam venues and times have been adjusted for some departments. Visit the exam portal for details.', '2024-06-20', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsNgW6FaeEe3QP2NMKcry5tSEINxi2Slv8og&s', 0.00),
+(42, 'sports', 'Friendly Volleyball Tournament', 'Join the fun and test your skills!', 'Teams can register in groups of 6–10 players. Prizes and snacks will be available.', '2024-07-05', 'https://clickpesa.com/wp-content/uploads/2024/08/airtel-money-logo.png', 2500.00),
+(43, 'social', 'Student Leaders Debate Night', 'Candidates will present their visions and answer questions.', 'Engage with aspiring leaders and help shape campus policy. Event open to all.', '2024-07-10', 'https://assets.e-agriculture.fao.org/public/uploads/news/2017/05/m-pesa-logo.jpg', 0.00),
+(44, 'adventure', 'Waterfall Exploration Trip', 'Hike and swim near the stunning Bagamoyo waterfalls.', 'Safety gear and transport included in the fee. Don’t forget your student ID.', '2024-09-02', 'https://images.seeklogo.com/logo-png/52/1/halo-pesa-tanzania-logo-png_seeklogo-527226.png', 9000.00),
+(45, 'school', 'Tuition Payment Deadline', 'Avoid penalties by completing payment on time.', 'Log in to the student finance portal to confirm your balance and generate payment slips.', '2024-08-25', 'https://www.gsma.com/solutions-and-impact/connectivity-for-good/mobile-for-development/wp-content/uploads/2019/04/Mixx_Logo_CMYK_M.Blue.jpg', 750000.00),
+(46, 'academic', 'Internship Placement Briefing', 'Mandatory session for final-year students.', 'Meet representatives from leading companies and learn about placement requirements.', '2024-06-28', 'https://clickpesa.com/wp-content/uploads/2024/08/airtel-money-logo.png', 0.00),
+(47, 'sports', 'Chess Tournament Registration', 'Open to beginners and experienced players.', 'Top 3 winners get trophies and mentorship opportunities with alumni.', '2024-10-15', 'https://assets.e-agriculture.fao.org/public/uploads/news/2017/05/m-pesa-logo.jpg', 2000.00),
+(48, 'social', 'Community Clean-Up Day', 'Volunteer to clean our neighborhoods and plant trees.', 'Materials provided. Volunteers get certificates and T-shirts.', '2024-09-20', 'https://www.gsma.com/solutions-and-impact/connectivity-for-good/mobile-for-development/wp-content/uploads/2019/04/Mixx_Logo_CMYK_M.Blue.jpg', 0.00),
+(49, 'adventure', 'Campus Orienteering Challenge', 'Solve puzzles and explore your surroundings!', 'Teams of 4 will compete to find hidden clues around campus.', '2024-07-17', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsNgW6FaeEe3QP2NMKcry5tSEINxi2Slv8og&s', 3000.00),
+(50, 'school', 'Student Portal Maintenance', 'Portal will be offline for upgrades this weekend.', 'Plan ahead: access your course materials and exam info before Friday.', '2024-08-01', 'https://images.seeklogo.com/logo-png/52/1/halo-pesa-tanzania-logo-png_seeklogo-527226.png', 0.00);
+*/}
+
+export default function AnnouncementCards(){
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [loading, setLoading] = useState(true); // Add loading state
+  const ws = useRef<WebSocket | null>(null);
+  const requestInterval = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    ws.current = new WebSocket('wss://childheaded.zoofam.site/ws/example');
+
+    ws.current.onopen = () => {
+      setLoading(true); // Start loading
+      ws.current?.send(JSON.stringify({ type: 'get_announcements' }));
+      requestInterval.current = setInterval(() => {
+        ws.current?.send(JSON.stringify({ type: 'get_announcements' }));
+      }, 10000);
+    };
+
+    ws.current.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (Array.isArray(data)) {
+          setAnnouncements(data);
+          setLoading(false); // Data loaded
+        } else {
+          setLoading(false); // Stop loading on unexpected data
+        }
+      } catch (error) {
+        setLoading(false); // Stop loading on error
+      }
+    };
+
+    ws.current.onerror = (error) => {
+      setLoading(false); // Stop loading on error
+    };
+
+    ws.current.onclose = () => {
+      if (requestInterval.current) clearInterval(requestInterval.current);
+      setLoading(false); // Stop loading on close
+    };
+
+    return () => {
+      if (ws.current) ws.current.close();
+      if (requestInterval.current) clearInterval(requestInterval.current);
+    };
+  }, []);
+
+  const AllAnnouncement = announcements;
+
+  const [contents, setcontents] = useState(3);
+  const [selectedAnnouncement, setSelectedAnnouncement] = useState<AnnouncementType | null>(null);
+  const updateContents = () => {
+    setcontents(contents+3)
+  }
+
+  const Announcement = [...AllAnnouncement]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, contents);
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleCardClick = (announcement: AnnouncementType) => {
+    setSelectedAnnouncement(announcement);
+    setIsOpen(true);
+  };
+
+  return (
+    <>
+      <Column className='gap-5 position-relative items-center py-5 mb-2' radius="l-4" >
+        {loading ? (
+          <Row fillWidth center>
+            <Spinner size="l" />
+          </Row>
+        ) : (
+          Announcement.map((Announcement) => (
+            <Row className='px-3 ' key={Announcement.id}>
+              <TiltFx onClick={() => handleCardClick(Announcement)}>
+                <Card radius="l-4" direction="column" border="neutral-alpha-medium">
+                  <Column fillWidth className='p-3'>
+                    <Row className='md:w-150 p-5'>
+                      <Media
+                        src={Announcement.image}
+                        unoptimized
+                        width={9}
+                        height={7}
+                        radius="l-4"
+                        border="neutral-alpha-medium"
+                      />
+                      <Column  maxWidth={30} className='m-2 pl-5'>
+                        <Row  className=' justify-between'>
+                          <Heading variant="heading-strong-s" as="h2">{Announcement.title}</Heading>
+                          <Tag variant="success" maxHeight={2} label={Announcement.type} />
+                        </Row>
+                        <Row className='pt-2 opacity-60'>
+                          <Text variant="label-default-s">{Announcement.description}</Text>
+                        </Row>
+                        <Column fillHeight className='flex-column justify-end opacity-70'>
+                          <Flex className='justify-between'>
+                            <Text>{Announcement.date}</Text>
+                            <Text>{Announcement.amount}/=</Text>
+                          </Flex>
+                        </Column>
+                      </Column>
+                    </Row>
+                  </Column>
+                </Card>
+              </TiltFx>
+            </Row>
+          ))
+        )}
+
+        {selectedAnnouncement && (
+          <Dialog
+            isOpen={isOpen}
+            onClose={() => setIsOpen(false)}
+            title={selectedAnnouncement.title}
+            className='mt-10 md:mt-10 md:max-w-xl max-w-full'
+          >
+            <Line />
+            <Column fillWidth gap="16" marginTop="12">
+              <Media
+                src={selectedAnnouncement.image}
+                alt={selectedAnnouncement.title}
+                border="neutral-alpha-medium"
+                height={20}
+                fillWidth
+                unoptimized
+                radius="l-4"
+              />
+              <Row fillWidth  className='justify-between'>
+                <Tag variant="success"  label={selectedAnnouncement.type} />
+                <Text className='opacity-70'>{selectedAnnouncement.date}</Text>
+              </Row>
+              <Row>
+                {selectedAnnouncement.fullDescription}
+              </Row>
+            </Column>
+          </Dialog>
+        )}
+
+        <Row fillWidth center>
+          <form action={updateContents}>
+            <Button type='submit'>Continue</Button>
+          </form>
+        </Row>
+      </Column>
+    </>
+  )
+}

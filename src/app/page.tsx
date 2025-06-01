@@ -1,58 +1,29 @@
-"use client";
-import React from 'react'
-import {Row, Column, Button, Grid, Flex, Table, Text, ThemeSwitcher} from "@/once-ui/components";
-import StudentsId from '@/components/StudentsId';
-import AnouncementCards from '@/components/AnnouncementCards';
-import StatusCards from '@/components/statusCards';
-import StudyProgress from '@/components/StudyProgress';
+import { Column, Heading, Text, Button, Logo, Badge, Line, LetterFx } from "@/once-ui/components";
+import './globals.css';
 
-import './globals.css'
-
-export default function page() {
+export default function Home() {
   return (
-    <>
-      <div className='px-5 pt-5 w-full'>
-        <Column fillWidth>
-          <Row className='justify-between items-center'>
-            <Column>
-              <Text className='text-3xl font-bold'>Welcome back, Student!</Text>
-              <Text className='opacity-70'>Track your progress and manage your studies effectively</Text>
-            </Column>
-            <Button data-solid="color">View Progress</Button>
-          </Row>
-        </Column>
-        
-        
-        <Column className='mt-5 '>
-          <Grid className='md:grid-cols-2 md:justify-between justify-center items-center'>
-            <StudentsId />
-            <Column fillHeight className='justify-between w-full'>
-              <Text className='text-2xl font-bold'>Learning Statistics</Text>
-              <StatusCards />
-            </Column>
-          </Grid>
-        </Column>
-
-       
-
-        <div className='mt-5 '>
-          <Grid className='md:grid-cols-2 md:justify-between justify-center items-center'>
-            <Column fillHeight className='justify-top w-full'>
-              <Text className='text-2xl font-bold'>Learning Statistics</Text>
-              <StudyProgress />
-              <ThemeSwitcher />
-            </Column>
-            <Column className='justify-top'>
-            <Text className='text-2xl font-bold'>Latest News</Text>
-             <AnouncementCards />
-            </Column>
-          </Grid>
-        </div>
-
-       
-        
-
-      </div>
-    </>
-  )
+    <Column suppressHydrationWarning fill center padding="l">
+      <Column maxWidth="s" horizontal="center" gap="l" align="center">
+        <Badge textVariant="code-default-s" border="neutral-alpha-medium" onBackground="neutral-medium" vertical="center" gap="16">
+          <Text className="text-lg font-bold">EduPay</Text>
+          <Line vert background="neutral-alpha-strong"/>
+          <Text marginX="4">
+            <LetterFx trigger="instant">
+            Smart School Payment Management System
+            </LetterFx>
+          </Text>
+        </Badge>
+        <Heading variant="display-strong-xl" marginTop="24">
+          Payment that doesn't beg for attention
+        </Heading>
+        <Text variant="heading-default-xl" onBackground="neutral-weak" wrap="balance" marginBottom="16">
+          Pay with clarity, speed, and quiet confidence
+        </Text>
+        <Button id="docs" href="/" data-border="rounded" weight="default" prefixIcon="copy" arrowIcon>
+          Get to Know
+        </Button>
+      </Column>
+    </Column>
+  );
 }

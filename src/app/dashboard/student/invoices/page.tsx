@@ -2,16 +2,16 @@ import React from 'react'
 import { Row, Column, Feedback, Text, IconButton, } from '@/once-ui/components'
 
 const StudyProgressData =[
-    {id:20, name:'Payment Pages', value: '120', percentage:'4', icon:'check', variant:'success'},
-    {id:3, name:'Bulk Payouts', value: '56', percentage:'3', icon:'search', variant:'success'},
-    {id:4, name:'Payment Requests', value: '3', percentage:'16', icon:'help', variant:'success'},
-    {id:9, name:'Deposits', value: '154', percentage:'1.5', icon:'check', variant:'success'},
+    {id:20, name:'Total invoices', value: '120', percentage:'4', icon:'check', variant:'success'},
+    {id:3, name:'Total TZS Invoice', value: '56', percentage:'3', icon:'search', variant:'success'},
+    {id:4, name:'Total USD Invoice', value: '3', percentage:'16', icon:'help', variant:'success'},
+    {id:9, name:'Total Payments', value: '154', percentage:'1.5', icon:'check', variant:'success'},
 ]
 
 export default function StudyProgress() {
   return (
     <>
-      <div className='grid grid-cols-2 gap-4'>
+      <div className='px-5 grid grid-cols-2 gap-4'>
         {StudyProgressData.map((StudyProgressData)=>(
             <div key={StudyProgressData.id}>
                 <Feedback

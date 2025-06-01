@@ -15,11 +15,11 @@ const ThemeSwitcher = forwardRef<HTMLDivElement, React.ComponentProps<typeof Row
       radius="full"
       {...flex}
     >
-      <IconButton
+     {/* <IconButton
         icon="computer"
         variant={theme === "system" ? "primary" : "tertiary"}
         onClick={() => setTheme("system")}
-      />
+      /> */}
       <IconButton
         icon="dark"
         variant={theme === "dark" ? "primary" : "tertiary"}

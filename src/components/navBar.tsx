@@ -1,5 +1,5 @@
 "use client";
-import { NavIcon, Flex, Text, Row, Column, Logo, ToggleButton } from "@/once-ui/components";
+import { NavIcon, User, Flex, SmartLink, Text,ThemeSwitcher, Row, Column, Logo, ToggleButton, Icon } from "@/once-ui/components";
 import { useState } from "react";
 
 export default function NavIconToggle() {
@@ -10,51 +10,61 @@ export default function NavIconToggle() {
   };
 
   return (
-    <Column fillWidth>
+    <Column suppressHydrationWarning fillWidth className="position-fixed top-0 left-0 z-50">
       <Flex 
         paddingX="20" 
         paddingY="8" 
-        background="surface"
-        border="surface"
-        radius="l" 
+        
+        className="bg-gradient-to-b from-black to-transparent backdrop-blur-xl  w-full"        
         horizontal="space-between" 
         vertical="center"
         fillWidth
       >
-        <Logo wordmark={false}/>
+        
         <NavIcon 
           isActive={isActive} 
           onClick={handleClick} 
           aria-label="Toggle navigation menu"
           aria-expanded={isActive}
           aria-controls="demo-nav"
+          className="md:hidden"
         />
+        <ThemeSwitcher />
+        <User
+  tagProps={{ label: "Admin", variant: "accent" }}
+  avatarProps={{ src: "/images/nuchypId.jpg" }}
+/>
       </Flex>
       
       {isActive && (
+        <div className="flex-1 h-screen bg-black/40 backdrop-blur-xl">
         <Column 
           id="demo-nav"
+          className="backdrop-blur-md font-xl"
           padding="16" 
-          background="surface" 
-          border="surface"
-          radius="l" 
-          marginTop="8"
+          marginTop="0"
           fillWidth
-          gap="8"
+          gap="12"
         >
-          <ToggleButton fillWidth horizontal="start" size="l">
-            Home
-          </ToggleButton>
-          <ToggleButton fillWidth horizontal="start" size="l">
-            Products
-          </ToggleButton>
-          <ToggleButton fillWidth horizontal="start" size="l">
-            About
-          </ToggleButton>
-          <ToggleButton fillWidth horizontal="start" size="l">
-            Contact
-          </ToggleButton>
+          <a  href="/dashboard/student" >
+             Home
+          </a>
+          <a href="/dashboard/student/transactions">
+            Transactions
+          </a>
+          <a href="/dashboard/student/invoices" >
+            Invoices
+          </a>
+          <a href="/dashboard/student/profile" >
+            Profile
+          </a>
+          <a href="/dashboard/student/invoices">
+            invoices
+          </a>
+
+          <div className="h-screen w-full invisible pointer-events-none"></div>
         </Column>
+        </div>
       )}
     </Column>
   );
