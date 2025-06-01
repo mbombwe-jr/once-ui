@@ -20,7 +20,7 @@ export default function Home() {
         <Text variant="heading-default-xl" onBackground="neutral-weak" wrap="balance" marginBottom="16">
           Pay with clarity, speed, and quiet confidence
         </Text>
-        <Button id="docs" href="/" data-border="rounded" weight="default" prefixIcon="copy" arrowIcon>
+        <Button id="docs" href="/dashboard/student" data-border="rounded" weight="default" prefixIcon="copy" arrowIcon>
           Get to Know
         </Button>
       </Column>
