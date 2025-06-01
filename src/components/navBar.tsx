@@ -1,5 +1,5 @@
 "use client";
-import { NavIcon, User, Flex, SmartLink, Text,ThemeSwitcher, Row, Column, Logo, ToggleButton, Icon } from "@/once-ui/components";
+import { NavIcon, User, Flex, SmartLink, Text,ThemeSwitcher, Row, Column, Logo, ToggleButton, Icon, Media } from "@/once-ui/components";
 import { useState } from "react";
 
 export default function NavIconToggle() {
@@ -30,10 +30,7 @@ export default function NavIconToggle() {
           className="md:hidden"
         />
         <ThemeSwitcher />
-        <User
-  tagProps={{ label: "Admin", variant: "accent" }}
-  avatarProps={{ src: "/images/nuchypId.jpg" }}
-/>
+        
       </Flex>
       
       {isActive && (
