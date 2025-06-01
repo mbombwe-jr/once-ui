@@ -2,17 +2,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import {Button, Line, Flex, Dialog, Spinner, Card, Column, Heading, Input, Icon, Media, Row, Tag, Text, TiltFx} from "@/once-ui/components";
 
-interface AnnouncementType {
-    id: string;
-    type: string;
-    title: string;
-    description: string;
-    fullDescription: string;
-    date: string;
-    amount: string
-;   image: string;
-}
-
 type Announcement = {
   id: number;
   type: string;
@@ -20,7 +9,7 @@ type Announcement = {
   description: string;
   fullDescription: string;
   date: string;
-  amount: string
+  amount: string;
   image: string;
 };
 
@@ -40,7 +29,7 @@ INSERT INTO transactions (id, type, title, description, fullDescription, date, i
 
 export default function AnnouncementCards(){
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
   const ws = useRef<WebSocket | null>(null);
   const requestInterval = useRef<NodeJS.Timeout | null>(null);
 
@@ -87,18 +76,18 @@ export default function AnnouncementCards(){
   const AllAnnouncement = announcements;
 
   const [contents, setcontents] = useState(3);
-  const [selectedAnnouncement, setSelectedAnnouncement] = useState<AnnouncementType | null>(null);
+  const [selectedAnnouncement, setSelectedAnnouncement] = useState<Announcement | null>(null); // <--- use Announcement
   const updateContents = () => {
     setcontents(contents+3)
   }
 
-  const Announcement = [...AllAnnouncement]
+  const AnnouncementList = [...AllAnnouncement]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, contents);
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleCardClick = (announcement: AnnouncementType) => {
+  const handleCardClick = (announcement: Announcement) => { // <--- use Announcement
     setSelectedAnnouncement(announcement);
     setIsOpen(true);
   };
@@ -111,14 +100,14 @@ export default function AnnouncementCards(){
             <Spinner size="l" />
           </Row>
         ) : (
-          Announcement.map((Announcement) => (
-            <Row className='px-3 ' key={Announcement.id}>
-              <TiltFx onClick={() => handleCardClick(Announcement)}>
+          AnnouncementList.map((announcement) => (
+            <Row className='px-3 ' key={announcement.id}>
+              <TiltFx onClick={() => handleCardClick(announcement)}>
                 <Card radius="l-4" direction="column" border="neutral-alpha-medium">
                   <Column fillWidth className='p-3'>
                     <Row className='md:w-150 p-5'>
                       <Media
-                        src={Announcement.image}
+                        src={announcement.image}
                         unoptimized
                         width={9}
                         height={7}
@@ -127,16 +116,16 @@ export default function AnnouncementCards(){
                       />
                       <Column  maxWidth={30} className='m-2 pl-5'>
                         <Row  className=' justify-between'>
-                          <Heading variant="heading-strong-s" as="h2">{Announcement.title}</Heading>
-                          <Tag variant="success" maxHeight={2} label={Announcement.type} />
+                          <Heading variant="heading-strong-s" as="h2">{announcement.title}</Heading>
+                          <Tag variant="success" maxHeight={2} label={announcement.type} />
                         </Row>
                         <Row className='pt-2 opacity-60'>
-                          <Text variant="label-default-s">{Announcement.description}</Text>
+                          <Text variant="label-default-s">{announcement.description}</Text>
                         </Row>
                         <Column fillHeight className='flex-column justify-end opacity-70'>
                           <Flex className='justify-between'>
-                            <Text>{Announcement.date}</Text>
-                            <Text>{Announcement.amount}/=</Text>
+                            <Text>{announcement.date}</Text>
+                            <Text>{announcement.amount}/=</Text>
                           </Flex>
                         </Column>
                       </Column>
