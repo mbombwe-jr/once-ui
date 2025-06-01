@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import {Button, Line, Avatar, Dialog, Card, Column, Heading, Input, Icon, Media, Row, Tag, Text, TiltFx} from "@/once-ui/components";
 
 interface AnnouncementType {
-    id: string;
+    id: string; // keep as string
     type: string;
     title: string;
     description: string;
@@ -12,7 +12,7 @@ interface AnnouncementType {
     image: string;
 }
 
-const AllAnnouncement = [
+const AllAnnouncement: AnnouncementType[] = [
     {
         "id":"5",
         "type":"academic",
@@ -70,8 +70,8 @@ export default function AnnouncementCards(){
     }
 
     const Announcement = [...AllAnnouncement]
-     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-     .slice(0, contents);
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        .slice(0, contents);
 
     const [isOpen, setIsOpen] = useState(false);
 
