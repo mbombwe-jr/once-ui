@@ -1,6 +1,7 @@
 "use client";
 import { NavIcon, User, Flex, SmartLink, Text,ThemeSwitcher, Row, Column, Logo, ToggleButton, Icon, Media } from "@/once-ui/components";
 import { useState } from "react";
+import Sheetz from "@/components/studentSheet";
 
 export default function NavIconToggle() {
   const [isActive, setIsActive] = useState(false);
@@ -20,16 +21,20 @@ export default function NavIconToggle() {
         vertical="center"
         fillWidth
       >
-        
+        <div className="md:hidden block">
         <NavIcon 
           isActive={isActive} 
           onClick={handleClick} 
           aria-label="Toggle navigation menu"
           aria-expanded={isActive}
           aria-controls="demo-nav"
-          className="md:hidden"
         />
+        </div>
+        <div className="md:block hidden">
+        <Sheetz />
+        </div>
         <ThemeSwitcher />
+        
         
       </Flex>
       
@@ -43,6 +48,7 @@ export default function NavIconToggle() {
           fillWidth
           gap="12"
         >
+          <Column className="text-2xl font-bold gap-3">
           <a  href="/dashboard/student" >
              Home
           </a>
@@ -55,9 +61,10 @@ export default function NavIconToggle() {
           <a href="/dashboard/student/profile" >
             Profile
           </a>
-          <a href="/dashboard/student/invoices">
-            invoices
+          <a href="/dashboard/student/notifications">
+            Notifications
           </a>
+          </Column>
 
           <div className="h-screen w-full invisible pointer-events-none"></div>
         </Column>

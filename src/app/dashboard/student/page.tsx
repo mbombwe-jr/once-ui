@@ -28,7 +28,7 @@ export default function page() {
              <div><StudentsId /></div>
             </div>
             <Column fillHeight className='justify-between w-full'>
-              <Text className='text-2xl font-bold'>Summary</Text>
+              <p className='text-2xl font-bold'>Summary</p>
               <StatusCards />
             </Column>
           </Grid>

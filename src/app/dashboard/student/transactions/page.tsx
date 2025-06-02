@@ -1,4 +1,4 @@
-import Transactions from '@/components/Transactions';
+import Transactions from '@/components/StudentsTransactions';
 import React from 'react';
 import { Column, Grid, Text } from "@/once-ui/components";
 import StudyProgress from '@/components/StudyProgress';

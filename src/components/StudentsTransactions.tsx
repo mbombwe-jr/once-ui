@@ -4,6 +4,7 @@ import {Button, Line, Flex, Dialog, Spinner, Card, Column, Heading, Input, Icon,
 
 type Announcement = {
   id: number;
+  student_id: string; 
   type: string;
   title: string;
   description: string;
@@ -12,6 +13,8 @@ type Announcement = {
   amount: string;
   image: string;
 };
+
+const student = "2023002";
 
 {/*sample data
 INSERT INTO transactions (id, type, title, description, fullDescription, date, image, amount) VALUES
@@ -82,6 +85,7 @@ export default function AnnouncementCards(){
   }
 
   const AnnouncementList = [...AllAnnouncement]
+    .filter(announcement => announcement.student_id === student) // Filter by student ID
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, contents);
 
@@ -100,8 +104,8 @@ export default function AnnouncementCards(){
             <Spinner size="l" />
           </Row>
         ) : (
-          AnnouncementList.map((announcement) => (
-            <Row className='px-3 ' key={announcement.id}>
+          AnnouncementList.map((announcement) =>(
+            <Row className='px-3' key={announcement.id}>
               <TiltFx onClick={() => handleCardClick(announcement)}>
                 <Card radius="l-4" direction="column" border="neutral-alpha-medium">
                   <Column fillWidth className='p-3'>
@@ -134,6 +138,7 @@ export default function AnnouncementCards(){
                 </Card>
               </TiltFx>
             </Row>
+            
           ))
         )}
 
@@ -150,8 +155,7 @@ export default function AnnouncementCards(){
                 src={selectedAnnouncement.image}
                 alt={selectedAnnouncement.title}
                 border="neutral-alpha-medium"
-                height={20}
-                fillWidth
+                height={18}
                 unoptimized
                 radius="l-4"
               />
@@ -161,6 +165,11 @@ export default function AnnouncementCards(){
               </Row>
               <Row>
                 {selectedAnnouncement.fullDescription}
+              </Row>
+              <Row fillWidth center className='opacity-70 font-bold'>
+                <Row border="neutral-alpha-medium"  className='p-3 rounded-md'>
+                {"Tsh "+selectedAnnouncement.amount}
+                </Row>
               </Row>
             </Column>
           </Dialog>
