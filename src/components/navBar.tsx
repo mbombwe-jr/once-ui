@@ -1,7 +1,13 @@
 "use client";
-import { NavIcon, User, Flex, SmartLink, Text,ThemeSwitcher, Row, Column, Logo, ToggleButton, Icon, Media } from "@/once-ui/components";
+import { NavIcon, UserMenu, IconButton, Avatar, User, Flex, SmartLink, Text,ThemeSwitcher, Row, Column, Logo, ToggleButton, Icon, Media, Card, Button } from "@/once-ui/components";
 import { useState } from "react";
 import Sheetz from "@/components/studentSheet";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+
 
 export default function NavIconToggle() {
   const [isActive, setIsActive] = useState(false);
@@ -34,7 +40,42 @@ export default function NavIconToggle() {
         <Sheetz />
         </div>
         <ThemeSwitcher />
+
         
+       <Row className="items-center gap-2"> 
+        <Popover>
+          <PopoverTrigger><IconButton icon="notification" size="m" variant="secondary" /></PopoverTrigger>
+          <PopoverContent className="border-none">
+            <Column background="surface" className="p-3 rounded-2xl">
+              <Text variant="label-default-m">Notifications</Text>
+              <Row className="justify-between">
+                <Text variant="label-default-s">You have 3 new notifications</Text>
+                <Icon name="bell" />
+              </Row>
+              <Button variant="primary" href="/dashboard/student/notification" fillWidth>View All</Button>
+            </Column>
+          </PopoverContent>
+        </Popover>
+        
+        <UserMenu
+           name="Christian Mmary"
+           subline="Student"
+           placement="bottom"
+           avatarProps={{ }}
+          dropdown={
+           <Column gap="4" padding="4" minWidth={10}>
+               <Button horizontal="start" fillWidth href="/dashboard/student/profile" prefixIcon="settings" id="arrow-button-2" variant="tertiary" >
+                  setings
+               </Button>
+               <Button horizontal="start" fillWidth prefixIcon="logout" id="arrow-button-2" variant="tertiary" >
+                   logout
+               </Button>
+                {/* <Button fillWidth hasPrefix={<Icon size="xs" onBackground="neutral-weak" name="settings" />} label="Settings" />
+                <ClientOption fillWidth hasPrefix={<Icon size="xs" onBackground="neutral-weak" name="logout" />} label="Log out" /> */}
+              </Column>
+  }
+/>
+       </Row>
         
       </Flex>
       

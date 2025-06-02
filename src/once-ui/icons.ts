@@ -1,3 +1,4 @@
+import { Settings } from "lucide-react";
 import { IconType } from "react-icons";
 
 import {
@@ -30,6 +31,9 @@ import {
   HiOutlinePlus,
   HiOutlineCalendar,
   HiOutlineDocumentDuplicate,
+  HiOutlineCog,
+  HiOutlineArrowRightOnRectangle,
+  HiOutlineBell,
 } from "react-icons/hi2";
 
 export const iconLibrary: Record<string, IconType> = {
@@ -60,8 +64,11 @@ export const iconLibrary: Record<string, IconType> = {
   eyeOff: HiOutlineEyeSlash,
   search: HiOutlineMagnifyingGlass,
   security: HiOutlineShieldCheck,
+  settings: HiOutlineCog,
   sparkle: HiOutlineSparkles,
-  computer: HiOutlineComputerDesktop
+  computer: HiOutlineComputerDesktop,
+  logout: HiOutlineArrowRightOnRectangle,
+  notification: HiOutlineBell,
 };
 
 export type IconLibrary = typeof iconLibrary;

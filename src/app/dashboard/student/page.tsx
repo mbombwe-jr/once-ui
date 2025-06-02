@@ -17,7 +17,7 @@ export default function page() {
               <Text className='text-3xl font-bold'>Welcome back, Student!</Text>
               <Text className='opacity-70'>Track your progress and manage your school payments effectively</Text>
             </Column>
-            <Button data-solid="color">Make Payments</Button>
+            <Button onClick={() => window.location.href = "/dashboard/student/invoices"} data-solid="color">Make Payments</Button>
           </Row>
         </Column>
         
@@ -28,7 +28,7 @@ export default function page() {
              <div><StudentsId /></div>
             </div>
             <Column fillHeight className='justify-between w-full'>
-              <p className='text-2xl font-bold'>Summary</p>
+              <Text className='text-2xl font-bold'>Summary</Text>
               <StatusCards />
             </Column>
           </Grid>
