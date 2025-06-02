@@ -1,4 +1,4 @@
-name: publish-tauri-android-release
+name: Build and Publish Tauri Mobile Apps
 
 on:
   push:
@@ -7,122 +7,54 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: macos-latest
+  build-android:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Install Xcode Command Line Tools
-        run: |
-          if ! xcode-select -p > /dev/null; then
-            sudo xcode-select --install
-          fi
-
-      - name: Set Xcode Developer Directory
-        run: sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
-
-      - name: Verify xcrun
-        run: xcrun --version
-
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          profile: minimal
-          override: true
-
-      - name: Install pnpm
-        run: npm install -g pnpm
-
-      - name: Install Tauri CLI
-        run: cargo install tauri-cli
-        working-directory: ./src-tauri
-
-  publish-tauri-android:
-    needs: build
-    permissions:
-      contents: write
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libwebkit2gtk-4.0-dev \
-            libappindicator3-dev \
-            librsvg2-dev \
-            patchelf \
-            wget \
-            unzip \
-            libssl-dev \
-            pkg-config \
-            libudev-dev
-
-      - name: Install pnpm globally
-        run: npm install -g pnpm
-
-      - name: Setup Node
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
-          cache: 'pnpm'
-
-      - name: Install Rust and target
-        uses: actions-rs/toolchain@v1
+          node-version: '20'
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
-          target: aarch64-linux-android
-          profile: minimal
-          override: true
-
-      - name: Rust cache
-        uses: swatinem/rust-cache@v2
-        with:
-          workspaces: './src-tauri -> target'
-
-      - name: Install frontend dependencies
-        run: pnpm install
-
-      - name: Setup JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Install Android SDK and NDK
+          targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
+      - name: Install Android SDK
         uses: android-actions/setup-android@v3
-
-      - name: Install specific NDK version
-        run: sdkmanager --install "ndk;25.2.9519653"
-
-      - name: Install cargo-ndk
-        run: cargo install cargo-ndk
-        working-directory: ./src-tauri
-
-      - name: Configure Android NDK environment
-        run: |
-          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/25.2.9519653" >> $GITHUB_ENV
-
-      - name: Build Android app
-        run: |
-          cargo clean
-          cargo ndk -t arm64-v8a build --release
-        working-directory: ./src-tauri
-        env:
-          ANDROID_NDK_HOME: ${{ env.ANDROID_NDK_HOME }}
-
-      - name: Build and Publish with Tauri Action
-        uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: app-mobile-v__VERSION__-android
-          releaseName: 'App Mobile v__VERSION__ (android)'
-          releaseBody: 'See the assets to download this version and install.'
-          releaseDraft: true
-          prerelease: false
-          args: --target aarch64-linux-android
+          cmdline-tools-version: 'latest'
+      - name: Install cargo-mobile2
+        run: cargo install --git https://github.com/tauri-apps/cargo-mobile2
+      - name: Install frontend dependencies
+        run: yarn install # or npm install, pnpm install
+      - name: Build Android app
+        run: cargo tauri android build
+      - name: Upload Android artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-app
+          path: src-tauri/target/android/*.apk
+
+  build-ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-ios
+      - name: Install cargo-mobile2
+        run: cargo install --git https://github.com/tauri-apps/cargo-mobile2
+      - name: Install frontend dependencies
+        run: yarn install # or npm install, pnpm install
+      - name: Build iOS app
+        run: cargo tauri ios build
+      - name: Upload iOS artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ios-app
+          path: src-tauri/target/ios/*.ipa
