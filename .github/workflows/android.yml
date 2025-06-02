@@ -34,16 +34,19 @@ jobs:
         run: |
           echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> $GITHUB_PATH
           echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
-          echo "$ANDROID_HOME/emulator" >> $GITHUB_PATH
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
           
-      - name: Install cargo-mobile2
-        run: cargo install --git https://github.com/tauri-apps/cargo-mobile2
+      - name: Install Tauri CLI
+        run: npm install -g @tauri-apps/cli
       
       - name: Install frontend dependencies
         run: pnpm install --frozen-lockfile
       
+      - name: Initialize Android project
+        run: npx tauri android init --ci
+      
       - name: Build Android app
-        run: cargo tauri android build --apk
+        run: npx tauri android build --apk
         env:
           JAVA_HOME: /usr/lib/jvm/temurin-17-jdk-amd64
           ANDROID_HOME: ${{ env.ANDROID_HOME }}
@@ -77,11 +80,14 @@ jobs:
           toolchain: stable
           targets: aarch64-apple-ios
       
-      - name: Install cargo-mobile2
-        run: cargo install --git https://github.com/tauri-apps/cargo-mobile2
+      - name: Install Tauri CLI
+        run: npm install -g @tauri-apps/cli
       
       - name: Install frontend dependencies
         run: pnpm install --frozen-lockfile
+      
+      - name: Initialize iOS project
+        run: npx tauri ios init --ci
       
       - name: Install Apple certificates
         uses: apple-actions/import-codesign-certs@v1
@@ -90,7 +96,7 @@ jobs:
           p12-password: ${{ secrets.IOS_P12_PASSWORD }}
           
       - name: Build iOS app
-        run: cargo tauri ios build --release
+        run: npx tauri ios build --release
         env:
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
