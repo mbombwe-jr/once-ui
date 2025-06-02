@@ -108,7 +108,7 @@ export default function AnnouncementCards(){
             <Row className='px-3' key={announcement.id}>
               <TiltFx onClick={() => handleCardClick(announcement)}>
                 <Card radius="l-4" direction="column" border="neutral-alpha-medium">
-                  <Column fillWidth className='p-3'>
+                  <Column fillWidth className='p-2'>
                     <Row className='md:w-150 p-5'>
                       <Media
                         src={announcement.image}
