@@ -31,10 +31,18 @@ import {
   HiOutlinePlus,
   HiOutlineCalendar,
   HiOutlineDocumentDuplicate,
-  HiOutlineCog,
   HiOutlineArrowRightOnRectangle,
   HiOutlineBell,
+  HiOutlineBuildingLibrary,
+  HiOutlineBanknotes,
+  HiOutlineBookmarkSquare,
+  HiOutlineBellAlert,
 } from "react-icons/hi2";
+
+import {
+  HiOutlineEmojiHappy,
+  HiOutlineCog,
+} from "react-icons/hi";
 
 export const iconLibrary: Record<string, IconType> = {
   chevronUp: HiChevronUp,
@@ -69,6 +77,11 @@ export const iconLibrary: Record<string, IconType> = {
   computer: HiOutlineComputerDesktop,
   logout: HiOutlineArrowRightOnRectangle,
   notification: HiOutlineBell,
+  home: HiOutlineBuildingLibrary,
+  money: HiOutlineBanknotes,
+  invoice: HiOutlineBookmarkSquare,
+  notificationalert: HiOutlineBellAlert,
+  emojihappy: HiOutlineEmojiHappy,
 };
 
 export type IconLibrary = typeof iconLibrary;

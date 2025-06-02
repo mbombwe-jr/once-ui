@@ -52,7 +52,7 @@ export default function NavIconToggle() {
                 <Text variant="label-default-s">You have 3 new notifications</Text>
                 <Icon name="bell" />
               </Row>
-              <Button variant="primary" href="/dashboard/student/notification" fillWidth>View All</Button>
+              <Button variant="primary" onClick={() => document.location.href="/dashboard/student/notifications"} fillWidth>View All</Button>
             </Column>
           </PopoverContent>
         </Popover>
@@ -80,33 +80,34 @@ export default function NavIconToggle() {
       </Flex>
       
       {isActive && (
-        <div className="flex-1 h-screen bg-black/40 backdrop-blur-xl">
+        <div className="flex-1 h-screen ">
         <Column 
           id="demo-nav"
-          className="backdrop-blur-md font-xl"
+          className="bg-opacity-50 backdrop-blur-2xl font-xl"
           padding="16" 
           marginTop="0"
           fillWidth
           gap="12"
         >
           <Column className="text-2xl font-bold gap-3">
-          <a  href="/dashboard/student" >
+           <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student"} variant="tertiary" prefixIcon="home">
              Home
-          </a>
-          <a href="/dashboard/student/transactions">
-            Transactions
-          </a>
-          <a href="/dashboard/student/invoices" >
-            Invoices
-          </a>
-          <a href="/dashboard/student/profile" >
-            Profile
-          </a>
-          <a href="/dashboard/student/notifications">
-            Notifications
-          </a>
+           </Button>
+           <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student/transactions"} variant="tertiary" prefixIcon="money">
+             Transactions
+           </Button>
+           <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student/invoices"} variant="tertiary" prefixIcon="invoice">
+             Invoices
+           </Button>
+           <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student/notifications"} variant="tertiary" prefixIcon="notificationalert">
+             Notifications
+           </Button>
+           <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student/profile"} variant="tertiary" prefixIcon="emojihappy">
+             Profile
+           </Button>
+          
           </Column>
-
+          
           <div className="h-screen w-full invisible pointer-events-none"></div>
         </Column>
         </div>

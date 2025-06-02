@@ -1,7 +1,6 @@
 import react from "react"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Column, NavIcon } from "@/once-ui/components"
+import { Button, Column, NavIcon } from "@/once-ui/components"
 import { Label } from "@/components/ui/label"
 import {
   Sheet,
@@ -23,32 +22,37 @@ export default function Sheetz() {
       <SheetContent className="border-neutral-700" side="left">
       <Column background="surface" fillHeight fillWidth  padding="l">
         <SheetHeader>
-          <SheetTitle>Edupay Student</SheetTitle>
+          <SheetTitle>Edupay Student Dashboard</SheetTitle>
           {/*<SheetDescription>
             Update your profile information below.
           </SheetDescription> */}
         </SheetHeader>
-        <Column gap="m" className="text-xl ml-5 pt-5 font-bold">
-         <a  href="/dashboard/student" >
+        <Column className="text-xl ml-5  font-bold">
+           <Button className="opacity-0" fillWidth size="s" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student"} variant="tertiary" prefixIcon="home">
              Home
-          </a>
-          <a href="/dashboard/student/transactions">
-            Transactions
-          </a>
-          <a href="/dashboard/student/invoices" >
-            Invoices
-          </a>
-          <a href="/dashboard/student/profile" >
-            Profile
-          </a>
-          <a href="/dashboard/student/notifications">
-            Notifications
-          </a>
+           </Button>
+           <Column gap="m">
+           <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student"} variant="tertiary" prefixIcon="home">
+             Home
+           </Button>
+           <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student/transactions"} variant="tertiary" prefixIcon="money">
+             Transactions
+           </Button>
+           <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student/invoices"} variant="tertiary" prefixIcon="invoice">
+             Invoices
+           </Button>
+           <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student/notifications"} variant="tertiary" prefixIcon="notificationalert">
+             Notifications
+           </Button>
+           <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student/profile"} variant="tertiary" prefixIcon="emojihappy">
+             Profile
+           </Button>
+           </Column>
         </Column>
         <SheetFooter>
-          <Button >Logout</Button>
+          <Button fillWidth >Logout</Button>
           <SheetClose asChild>
-            <Button variant="outline">Close</Button>
+            <Button fillWidth variant="secondary">Close</Button>
           </SheetClose>
         </SheetFooter>
       </Column>
