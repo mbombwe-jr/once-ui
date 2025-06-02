@@ -1,155 +1,68 @@
-name: Build and Publish Tauri Mobile Apps
+name: Build Tauri Mobile Apps
 
 on:
   push:
     branches:
-      - release
-  workflow_dispatch:
+      - main
 
 jobs:
-  build-android:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+  build:
+    strategy:
+      matrix:
+        platform: [android, ios]
+        include:
+          - platform: android
+            os: ubuntu-latest
+          - platform: ios
+            os: macos-latest
 
-      - name: Install pnpm
-        run: npm install -g pnpm@8
-      
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 'lts/*'
           cache: 'pnpm'
-      
-     
-      
-      - name: Cache pnpm dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.pnpm-store
-            node_modules
-            **/node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
-      
-      - name: Install Rust
+
+      - name: Install pnpm
+        run: corepack enable && corepack prepare pnpm@latest --activate
+
+      - name: Install frontend dependencies
+        run: pnpm install
+
+      - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
         with:
-          toolchain: stable
-          targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
-          
-      - name: Cache Rust dependencies
-        uses: actions/cache@v4
+          workspaces: './src-tauri -> target'
+
+      - name: Install Rust targets for Android
+        if: matrix.platform == 'android'
+        run: rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
+
+      - name: Install Rust targets for iOS
+        if: matrix.platform == 'ios'
+        run: rustup target add aarch64-apple-ios x86_64-apple-ios
+
+      - name: Set up Java for Android
+        if: matrix.platform == 'android'
+        uses: actions/setup-java@v4
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            src-tauri/target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-
-      
-      - name: Install Android SDK
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Android SDK
+        if: matrix.platform == 'android'
         uses: android-actions/setup-android@v3
-      
-      - name: Configure Android environment
-        run: |
-          echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> $GITHUB_PATH
-          echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
-          
-      - name: Install Tauri CLI
-        run: npm install -g @tauri-apps/cli
-      
-      - name: Install frontend dependencies
-        run: pnpm install --frozen-lockfile
-      
-      - name: Initialize Android project
-        run: npx tauri android init --ci
-      
-      - name: Build Android app
-        run: npx tauri android build --apk
-        env:
-          JAVA_HOME: /usr/lib/jvm/temurin-17-jdk-amd64
-          ANDROID_HOME: ${{ env.ANDROID_HOME }}
-          ANDROID_NDK_HOME: ${{ env.ANDROID_NDK_HOME }}
-      
-      - name: Upload Android artifacts
-        uses: actions/upload-artifact@v4
         with:
-          name: android-app
-          path: |
-            src-tauri/target/android/**/*.apk
-            src-tauri/target/android/**/*.aab
+          api-level: 34
+          ndk: '25.1.8937393'
 
-  build-ios:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'pnpm'
-      
-      - name: Install pnpm
-        run: npm install -g pnpm@8
-      
-      - name: Cache pnpm dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.pnpm-store
-            node_modules
-            **/node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
-      
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: stable
-          targets: aarch64-apple-ios
-      
-      - name: Cache Rust dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            src-tauri/target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-
-      
-      - name: Install Tauri CLI
-        run: npm install -g @tauri-apps/cli
-      
-      - name: Install frontend dependencies
-        run: pnpm install --frozen-lockfile
-      
-      - name: Initialize iOS project
-        run: npx tauri ios init --ci
-      
-      - name: Install Apple certificates
-        uses: apple-actions/import-codesign-certs@v2
-        with:
-          p12-file-base64: ${{ secrets.IOS_P12_BASE64 }}
-          p12-password: ${{ secrets.IOS_P12_PASSWORD }}
-          keychain-password: ${{ secrets.IOS_KEYCHAIN_PASSWORD }}
-          
-      - name: Build iOS app
-        run: npx tauri ios build --release
-        env:
-          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
-      
-      - name: Upload iOS artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ios-app
-          path: src-tauri/target/ios/**/*.ipa
+      - name: Build Tauri for ${{ matrix.platform }}
+        run: pnpm tauri ${{ matrix.platform }} build
