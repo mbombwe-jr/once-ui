@@ -11,50 +11,92 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'pnpm'
+          
+      - name: Install pnpm
+        run: npm install -g pnpm@8
+      
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
+          toolchain: stable
           targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
+          
       - name: Install Android SDK
         uses: android-actions/setup-android@v3
-        with:
-          cmdline-tools-version: 'latest'
+      
+      - name: Configure Android environment
+        run: |
+          echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> $GITHUB_PATH
+          echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
+          echo "$ANDROID_HOME/emulator" >> $GITHUB_PATH
+          
       - name: Install cargo-mobile2
         run: cargo install --git https://github.com/tauri-apps/cargo-mobile2
+      
       - name: Install frontend dependencies
-        run: yarn install # or npm install, pnpm install
+        run: pnpm install --frozen-lockfile
+      
       - name: Build Android app
-        run: cargo tauri android build
+        run: cargo tauri android build --apk
+        env:
+          JAVA_HOME: /usr/lib/jvm/temurin-17-jdk-amd64
+          ANDROID_HOME: ${{ env.ANDROID_HOME }}
+          ANDROID_NDK_HOME: ${{ env.ANDROID_NDK_HOME }}
+      
       - name: Upload Android artifacts
         uses: actions/upload-artifact@v3
         with:
           name: android-app
-          path: src-tauri/target/android/*.apk
+          path: |
+            src-tauri/target/android/**/*.apk
+            src-tauri/target/android/**/*.aab
 
   build-ios:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+      
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'pnpm'
+          
+      - name: Install pnpm
+        run: npm install -g pnpm@8
+      
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
+          toolchain: stable
           targets: aarch64-apple-ios
+      
       - name: Install cargo-mobile2
         run: cargo install --git https://github.com/tauri-apps/cargo-mobile2
+      
       - name: Install frontend dependencies
-        run: yarn install # or npm install, pnpm install
+        run: pnpm install --frozen-lockfile
+      
+      - name: Install Apple certificates
+        uses: apple-actions/import-codesign-certs@v1
+        with:
+          p12-file-base64: ${{ secrets.IOS_P12_BASE64 }}
+          p12-password: ${{ secrets.IOS_P12_PASSWORD }}
+          
       - name: Build iOS app
-        run: cargo tauri ios build
+        run: cargo tauri ios build --release
+        env:
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
+      
       - name: Upload iOS artifacts
         uses: actions/upload-artifact@v3
         with:
           name: ios-app
-          path: src-tauri/target/ios/*.ipa
+          path: src-tauri/target/ios/**/*.ipa
