@@ -12,15 +12,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Set up Node.js with pnpm
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
-          # Install pnpm through setup-node to ensure it's in PATH
-          pnpm-version: '8'
       
-      # Removed separate pnpm installation since setup-node handles it
+      - name: Install pnpm
+        run: npm install -g pnpm@8
       
       - name: Cache pnpm dependencies
         uses: actions/cache@v4
@@ -50,7 +49,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-
       
-      # Reverted to working Android setup version
       - name: Install Android SDK
         uses: android-actions/setup-android@v3
       
@@ -89,15 +87,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Set up Node.js with pnpm
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
-          # Install pnpm through setup-node to ensure it's in PATH
-          pnpm-version: '8'
       
-      # Removed separate pnpm installation since setup-node handles it
+      - name: Install pnpm
+        run: npm install -g pnpm@8
       
       - name: Cache pnpm dependencies
         uses: actions/cache@v4
