@@ -105,7 +105,7 @@ export default function AnnouncementCards(){
           </Row>
         ) : (
           AnnouncementList.map((announcement) =>(
-            <Row className='px-3' key={announcement.id}>
+            <Row className='px-2' key={announcement.id}>
               <TiltFx onClick={() => handleCardClick(announcement)}>
                 <Card radius="l-4" direction="column" border="neutral-alpha-medium">
                   <Column fillWidth className='p-2'>
