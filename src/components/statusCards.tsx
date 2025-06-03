@@ -1,5 +1,6 @@
 import React from 'react'
 import { Row, Card, Column, Feedback, Grid, Text, Flex, IconButton, TiltFx } from '@/once-ui/components'
+import CountUp from 'react-countup';
 
 const LearningStatisticsData =[
     {id:20, name:'Payments', value: '120', percentage:'4', icon:'check', variant:'danger'},
@@ -25,7 +26,7 @@ export default function LearningStatistics() {
                         <IconButton icon={LearningStatisticsData.icon} variant='secondary' />
                     </Row>
                     <Row className='text-3xl font-bold'>
-                        <Text>{LearningStatisticsData.value}</Text>
+                        <Text><CountUp start={0} end={Number(LearningStatisticsData.value)} duration={3} /></Text>
                     </Row>
                     <Row>
                         <Text>{LearningStatisticsData.percentage}% increase</Text>

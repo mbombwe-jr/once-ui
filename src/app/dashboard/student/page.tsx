@@ -10,7 +10,7 @@ import StudyProgress from '@/components/StudyProgress';
 export default function page() {
   return (
     <>
-      <div className='px-5 pt-5 w-full'>
+      <div className='px-5 md:px-10 pt-5 w-full'>
         <Column fillWidth>
           <Row className='justify-between items-center'>
             <Column>

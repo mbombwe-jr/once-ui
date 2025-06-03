@@ -59,6 +59,9 @@ importers:
       react-barcode:
         specifier: ^1.6.1
         version: 1.6.1(react@19.0.0)
+      react-countup:
+        specifier: ^6.5.3
+        version: 6.5.3(react@19.0.0)
       react-dom:
         specifier: 19.0.0
         version: 19.0.0(react@19.0.0)
@@ -1401,6 +1404,9 @@ packages:
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
+  countup.js@2.9.0:
+    resolution: {integrity: sha512-llqrvyXztRFPp6+i8jx25phHWcVWhrHO4Nlt0uAOSKHB8778zzQswa4MU3qKBvkXfJKftRYFJuVHez67lyKdHg==}
+
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
@@ -2004,6 +2010,11 @@ packages:
     resolution: {integrity: sha512-pc4ftnO5syHa/UjCruEeRsomlhoxKSugIgTA8T4dH0fvc89UMHL+/1Sp25IAphqG44pJkE5hMXhv89iS09jQyw==}
     peerDependencies:
       react: 16 - 19
+
+  react-countup@6.5.3:
+    resolution: {integrity: sha512-udnqVQitxC7QWADSPDOxVWULkLvKUWrDapn5i53HE4DPRVgs+Y5rr4bo25qEl8jSh+0l2cToJgGMx+clxPM3+w==}
+    peerDependencies:
+      react: '>= 16.3.0'
 
   react-dom@19.0.0:
     resolution: {integrity: sha512-4GV5sHFG0e/0AD4X+ySy6UJd3jVl1iNsNHdpad0qhABJ11twS3TTBnseqsKurKcsNqCEFeGL3uLpVChpIO3QfQ==}
@@ -3309,6 +3320,8 @@ snapshots:
 
   concat-map@0.0.1: {}
 
+  countup.js@2.9.0: {}
+
   cross-spawn@7.0.6:
     dependencies:
       path-key: 3.1.1
@@ -3923,6 +3936,11 @@ snapshots:
     dependencies:
       jsbarcode: 3.11.6
       prop-types: 15.8.1
+      react: 19.0.0
+
+  react-countup@6.5.3(react@19.0.0):
+    dependencies:
+      countup.js: 2.9.0
       react: 19.0.0
 
   react-dom@19.0.0(react@19.0.0):

@@ -1,5 +1,5 @@
 "use client";
-import { NavIcon, UserMenu, IconButton, Avatar, User, Flex, SmartLink, Text,ThemeSwitcher, Row, Column, Logo, ToggleButton, Icon, Media, Card, Button } from "@/once-ui/components";
+import { NavIcon, Background, UserMenu, IconButton, Avatar, User, Flex, SmartLink, Text,ThemeSwitcher, Row, Column, Logo, ToggleButton, Icon, Media, Card, Button } from "@/once-ui/components";
 import { useState } from "react";
 import Sheetz from "@/components/studentSheet";
 import {
@@ -18,11 +18,13 @@ export default function NavIconToggle() {
 
   return (
     <Column suppressHydrationWarning fillWidth className="position-fixed top-0 left-0 z-50">
+      
       <Flex 
         paddingX="20" 
         paddingY="8" 
         
-        className="bg-gradient-to-b from-black to-transparent backdrop-blur-xl  w-full"        
+        borderBottom="surface"
+        className="bg-gray-500/20 backdrop-blur-xl  w-full"        
         horizontal="space-between" 
         vertical="center"
         fillWidth
@@ -48,9 +50,9 @@ export default function NavIconToggle() {
           <PopoverContent className="border-none">
             <Column background="surface" className="p-3 rounded-2xl">
               <Text variant="label-default-m">Notifications</Text>
-              <Row className="justify-between">
+              <Row className="py-2 justify-between">
                 <Text variant="label-default-s">You have 3 new notifications</Text>
-                <Icon name="bell" />
+                <Icon name="notification" />
               </Row>
               <Button variant="primary" onClick={() => document.location.href="/dashboard/student/notifications"} fillWidth>View All</Button>
             </Column>
@@ -64,7 +66,7 @@ export default function NavIconToggle() {
            avatarProps={{ }}
           dropdown={
            <Column gap="4" padding="4" minWidth={10}>
-               <Button horizontal="start" fillWidth href="/dashboard/student/profile" prefixIcon="settings" id="arrow-button-2" variant="tertiary" >
+               <Button horizontal="start" fillWidth onClick={() => document.location.href="/dashboard/student/profile"} prefixIcon="settings" id="arrow-button-2" variant="tertiary" >
                   setings
                </Button>
                <Button horizontal="start" fillWidth prefixIcon="logout" id="arrow-button-2" variant="tertiary" >
@@ -78,6 +80,7 @@ export default function NavIconToggle() {
        </Row>
         
       </Flex>
+      
       
       {isActive && (
         <div className="flex-1 h-screen ">
@@ -102,7 +105,7 @@ export default function NavIconToggle() {
            <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student/notifications"} variant="tertiary" prefixIcon="notificationalert">
              Notifications
            </Button>
-           <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student/profile"} variant="tertiary" prefixIcon="emojihappy">
+           <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student/profile"} variant="tertiary" prefixIcon="profile">
              Profile
            </Button>
           

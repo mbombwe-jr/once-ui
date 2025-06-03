@@ -1,5 +1,6 @@
 import React from 'react'
 import { Row, Column, Feedback, Text, IconButton, } from '@/once-ui/components'
+import CountUp from 'react-countup';
 
 const StudyProgressData =[
     {id:20, name:'Payment Pages', value: '120', percentage:'4', icon:'check', variant:'success'},
@@ -24,7 +25,7 @@ export default function StudyProgress() {
                         <IconButton icon={StudyProgressData.icon} variant='secondary' />
                     </Row>
                     <Row className='text-3xl font-bold'>
-                        <Text>{StudyProgressData.value}</Text>
+                        <Text><CountUp start={0} end={Number(StudyProgressData.value)} duration={3} /></Text>
                     </Row>
                     <Row>
                         <Text>{StudyProgressData.percentage}% increase</Text>

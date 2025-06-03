@@ -44,6 +44,9 @@ import {
   HiOutlineCog,
 } from "react-icons/hi";
 
+import { CgProfile } from "react-icons/cg";
+import { profile } from "console";
+
 export const iconLibrary: Record<string, IconType> = {
   chevronUp: HiChevronUp,
   chevronDown: HiChevronDown,
@@ -82,6 +85,7 @@ export const iconLibrary: Record<string, IconType> = {
   invoice: HiOutlineBookmarkSquare,
   notificationalert: HiOutlineBellAlert,
   emojihappy: HiOutlineEmojiHappy,
+  profile: CgProfile,
 };
 
 export type IconLibrary = typeof iconLibrary;

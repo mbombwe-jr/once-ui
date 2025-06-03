@@ -28,12 +28,10 @@ export default function Sheetz() {
           </SheetDescription> */}
         </SheetHeader>
         <Column className="text-xl ml-5  font-bold">
-           <Button className="opacity-0" fillWidth size="s" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student"} variant="tertiary" prefixIcon="home">
-             Home
-           </Button>
-           <Column gap="m">
+          <div className="max-h-0"><Button className="opacity-0" fillWidth size="s" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student"} variant="tertiary" prefixIcon="home"></Button></div>
+          <Column gap="m">
            <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student"} variant="tertiary" prefixIcon="home">
-             Home
+            Home
            </Button>
            <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student/transactions"} variant="tertiary" prefixIcon="money">
              Transactions
@@ -44,7 +42,7 @@ export default function Sheetz() {
            <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student/notifications"} variant="tertiary" prefixIcon="notificationalert">
              Notifications
            </Button>
-           <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student/profile"} variant="tertiary" prefixIcon="emojihappy">
+           <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student/profile"} variant="tertiary" prefixIcon="profile">
              Profile
            </Button>
            </Column>
