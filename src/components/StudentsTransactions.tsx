@@ -107,9 +107,9 @@ export default function AnnouncementCards(){
           AnnouncementList.map((announcement) =>(
             <Row className='px-2' key={announcement.id}>
               <TiltFx onClick={() => handleCardClick(announcement)}>
-                <Card radius="l-4" direction="column" border="neutral-alpha-medium">
-                  <Column fillWidth className='p-2'>
-                    <Row className='md:w-150 p-5'>
+                <Card background='neutral-alpha-strong' radius="l-4" direction="column" border="neutral-alpha-medium">
+                  <Column  className=''>
+                    <Row className='md:w-150 p-3'>
                       <Media
                         src={announcement.image}
                         unoptimized
@@ -144,6 +144,7 @@ export default function AnnouncementCards(){
 
         {selectedAnnouncement && (
           <Dialog
+            background='neutral-medium'
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
             title={selectedAnnouncement.title}
