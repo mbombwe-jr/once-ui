@@ -29,7 +29,7 @@ export default function Sheetz() {
         </SheetHeader>
         <Column className="text-xl ml-5  font-bold">
           <div className="max-h-0"><Button className="opacity-0" fillWidth size="s" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student"} variant="tertiary" prefixIcon="home"></Button></div>
-          <Column gap="m">
+          <Column gap="s">
            <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student"} variant="tertiary" prefixIcon="home">
             Home
            </Button>
