@@ -37,7 +37,7 @@ export default function AnnouncementCards(){
   const requestInterval = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    ws.current = new WebSocket('wss://childheaded.zoofam.site/ws/example');
+    ws.current = new WebSocket('wss://childheaded.zoofam.site/ws/transactions/read');
 
     ws.current.onopen = () => {
       setLoading(true); // Start loading
