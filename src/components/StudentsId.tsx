@@ -18,12 +18,12 @@ function StudentsId(){
              width={4}
              height={4}
              alt="udsm Logo"
-             className='mx-1'
+             className=''
             />
             <div className=''></div>
             <Row fillWidth center>
             <Text  className="font-bold m-2  text-center">
-                <span className="text-xl lg:text-2xl  mx-3 xl:mx-0  xl:text-3xl">University of Dar es salaam</span><br />
+                <span className="text-2xl lg:text-2xl  mx-5 xl:mx-0  xl:text-3xl">University of Dar es salaam</span><br />
                 <span className="text-md">Student Identity Card</span>
             </Text>
             </Row>
