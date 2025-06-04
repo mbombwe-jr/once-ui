@@ -58,7 +58,7 @@ export default function InvoiceCards() {
     resolution: Resolution.MEDIUM,
     page: {
       margin: Margin.NONE,
-      format: 'A4',
+      format: [90, 130],
       orientation: 'portrait',
     },
     canvas: {
@@ -189,11 +189,12 @@ export default function InvoiceCards() {
             if (!open) setSelectedInvoice(null);
           }}>
             <SheetContent className="w-[400px] sm:w-[540px] border-none">
-              <Column fillHeight fillWidth border='neutral-medium' background='neutral-medium' className='p-5'>
+              <Column fillHeight fillWidth border='neutral-medium' background='neutral-medium' >
                 <SheetHeader>
-                  <SheetTitle>Edupay</SheetTitle>
+                  <SheetTitle></SheetTitle>
                 </SheetHeader>
-                <Column id="invoice_pdf">
+                <Column id="invoice_pdf" className='px-5 pb-5 '>
+                  <Row center className='text-lg font-bold'>Edu pay</Row>
                   <Row className='justify-between'>
                     <Text variant="label-default-m">Invoice Number: {selectedInvoice.invoice_number}</Text>
                     <Text variant="label-default-m">Term: {selectedInvoice.term}</Text>
@@ -211,7 +212,7 @@ export default function InvoiceCards() {
                     <Text variant="label-default-m">Paid Amount: {selectedInvoice.paid_amount}/=</Text>
                   </Row>
                   <Row className='justify-between'>
-                    <Text variant="label-default-m">Balance: {selectedInvoice.balance}/=</Text>
+                    <Text variant="label-default-m">Balance now: {selectedInvoice.balance}/=</Text>
                   </Row>
                 </Column>
                 <SheetFooter>
