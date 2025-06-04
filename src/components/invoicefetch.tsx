@@ -75,7 +75,7 @@ export default function InvoiceCards() {
     },
   };
 
-  const getTargetElement = () => document.getElementById('invoice');
+  const getTargetElement = () => document.getElementById('invoice_pdf');
 
   useEffect(() => {
     ws.current = new WebSocket('wss://childheaded.zoofam.site/ws/invoices');
@@ -188,12 +188,12 @@ export default function InvoiceCards() {
           <Sheet open={itisOpen} onOpenChange={(open) => {
             if (!open) setSelectedInvoice(null);
           }}>
-            <SheetContent className="w-[540px] sm:w-[2480px] border-none">
+            <SheetContent className="w-[400px] sm:w-[540px] border-none">
               <Column fillHeight fillWidth border='neutral-medium' background='neutral-medium' className='p-5'>
                 <SheetHeader>
                   <SheetTitle>Edupay</SheetTitle>
                 </SheetHeader>
-                <Column id="invoice">
+                <Column id="invoice_pdf">
                   <Row className='justify-between'>
                     <Text variant="label-default-m">Invoice Number: {selectedInvoice.invoice_number}</Text>
                     <Text variant="label-default-m">Term: {selectedInvoice.term}</Text>
