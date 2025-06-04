@@ -10,7 +10,7 @@ function StudentsId(){
   const StudentImage = "https://aris3.udsm.ac.tz/uploaded_files/student/photos/"+regNumber+".jpg";
   return (
     <>
-      <Card fillWidth maxWidth={30} radius="l-4" direction="column" border="neutral-alpha-medium">
+      <Card fillWidth maxWidth={30} radius="l-4" direction="column" border="neutral-alpha-medium" className='overflow-hidden'>
         <Row  className="m-2">
             <Media
              src="/images/udsmLogo.png"
@@ -54,7 +54,7 @@ function StudentsId(){
 
             <div>
             <Media
-              className="rounded-md mr-5"
+              className="rounded-bl-xl rounded-md mr-5"
               src="/images/barcode.png"
               unoptimized={true}
               height={2}

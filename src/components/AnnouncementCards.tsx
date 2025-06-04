@@ -115,32 +115,33 @@ export default function AnnouncementCards(){
          ))}   
 
       {selectedAnnouncement && (
-        <Dialog
-          isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
-          title={selectedAnnouncement.title}
-        >
-          <Line />
-          <Column fillWidth gap="16" marginTop="12">
-            <Media
-             src={selectedAnnouncement.image}
-             alt={selectedAnnouncement.title}
-             border="neutral-alpha-medium"
-             height={20}
-             fillWidth
-             unoptimized
-             radius="l-4"
-            />
-            <Row fillWidth fillHeight className='justify-between'>
-                <Tag variant="success"  label={selectedAnnouncement.type} />
-                <Text className='opacity-70'>{selectedAnnouncement.date}</Text>
-            </Row>
-            <Row>
-                {selectedAnnouncement.fullDescription}
-            </Row>
-          </Column>
-        </Dialog>
-      )}
+                <Dialog
+                  background='neutral-medium'
+                  isOpen={isOpen}
+                  onClose={() => setIsOpen(false)}
+                  title={selectedAnnouncement.title}
+                  className='mt-10 md:mt-10 md:max-w-xl max-w-full'
+                >
+                  <Line />
+                  <Column fillWidth gap="16" marginTop="12">
+                    <Media
+                      src={selectedAnnouncement.image}
+                      alt={selectedAnnouncement.title}
+                      border="neutral-alpha-medium"
+                      height={18}
+                      unoptimized
+                      radius="l-4"
+                    />
+                    <Row fillWidth  className='justify-between'>
+                      <Tag variant="success"  label={selectedAnnouncement.type} />
+                      <Text className='opacity-70'>{selectedAnnouncement.date}</Text>
+                    </Row>
+                    <Row>
+                      {selectedAnnouncement.fullDescription}
+                    </Row>
+                  </Column>
+                </Dialog>
+              )}
 
          <Row fillWidth center>
             <form action={updateContents}>

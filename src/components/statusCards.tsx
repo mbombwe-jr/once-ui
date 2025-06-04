@@ -18,7 +18,7 @@ export default function LearningStatistics() {
                 <TiltFx>
                 <Feedback
                   icon={false}
-                  variant='danger'
+                  variant='info'
                 >
                   <Column>
                     <Row className='justify-between'>
