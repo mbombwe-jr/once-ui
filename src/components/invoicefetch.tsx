@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import {Button, Line, Flex, Dialog, Spinner, Card, Column, Heading, Media, Row, Tag, Text, TiltFx} from "@/once-ui/components";
 import StudentSheet from '@/components/studentSheet';
-import html2pdf from 'html2pdf.js';
+import { usePDF } from 'react-to-pdf';
 
 type Invoice = {
   id: number;
@@ -41,10 +41,7 @@ export default function InvoiceCards(){
   const [loading, setLoading] = useState(true);
   const ws = useRef<WebSocket | null>(null);
   const requestInterval = useRef<NodeJS.Timeout | null>(null);
-  const handleDownload = () => {
-    const element = document.getElementById('pdf-content');
-    html2pdf().from(element).save('styled.pdf');
-  };
+  const { toPDF, targetRef } = usePDF({filename: 'page.pdf'});
 
   useEffect(() => {
     ws.current = new WebSocket('wss://childheaded.zoofam.site/ws/invoices');
@@ -159,7 +156,7 @@ export default function InvoiceCards(){
             onClose={() => setIsOpen(false)}
             title={selectedInvoice.invoice_number}
             className='mt-10 md:mt-10 md:max-w-xl max-w-full'
-            id="pdf-content"
+            ref={targetRef}
           >
             <Line />
             <Column fillWidth gap="16" marginTop="12">
@@ -179,7 +176,7 @@ export default function InvoiceCards(){
                 {selectedInvoice.academic_year}
               </Row>
               <Row fillWidth className='opacity-70 justify-between font-bold'>
-                <Button size="s" weight="default" variant="secondary" onClick={handleDownload}>Download</Button>
+                <Button size="s" weight="default" variant="secondary" onClick={() => toPDF()}>Download</Button>
                 <StudentSheet />
               </Row>
             </Column>
