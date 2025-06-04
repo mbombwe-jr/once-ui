@@ -20,41 +20,38 @@ export default function Sheetz() {
         <NavIcon />
       </SheetTrigger>
       <SheetContent className="border-neutral-700" side="left">
-      <Column background="surface" fillHeight fillWidth  padding="l">
-        <SheetHeader>
-          <SheetTitle>Edupay Student Dashboard</SheetTitle>
-          {/*<SheetDescription>
-            Update your profile information below.
-          </SheetDescription> */}
-        </SheetHeader>
-        <Column className="text-xl ml-5  font-bold">
-          <div className="max-h-0"><Button className="opacity-0" fillWidth size="s" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student"} variant="tertiary" prefixIcon="home"></Button></div>
-          <Column gap="s">
-           <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student"} variant="tertiary" prefixIcon="home">
-            Home
-           </Button>
-           <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student/transactions"} variant="tertiary" prefixIcon="money">
-             Transactions
-           </Button>
-           <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student/invoices"} variant="tertiary" prefixIcon="invoice">
-             Invoices
-           </Button>
-           <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student/notifications"} variant="tertiary" prefixIcon="notificationalert">
-             Notifications
-           </Button>
-           <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href="/dashboard/student/profile"} variant="tertiary" prefixIcon="profile">
-             Profile
-           </Button>
-           </Column>
+        <Column background="surface" fillHeight fillWidth padding="l">
+          <SheetHeader>
+            <SheetTitle>Edupay Student Dashboard</SheetTitle>
+          </SheetHeader>
+          <Column className="text-xl ml-5  font-bold">
+            <div className="max-h-0"><Button className="opacity-0" fillWidth size="s" weight="strong" horizontal="start" onClick={() => document.location.href = "/dashboard/student"} variant="tertiary" prefixIcon="home"></Button></div>
+            <Column gap="s">
+              <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href = "/dashboard/student"} variant="tertiary" prefixIcon="home">
+                Home
+              </Button>
+              <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href = "/dashboard/student/transactions"} variant="tertiary" prefixIcon="money">
+                Transactions
+              </Button>
+              <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href = "/dashboard/student/invoices"} variant="tertiary" prefixIcon="invoice">
+                Invoices
+              </Button>
+              <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href = "/dashboard/student/notifications"} variant="tertiary" prefixIcon="notificationalert">
+                Notifications
+              </Button>
+              <Button fillWidth size="l" weight="strong" horizontal="start" onClick={() => document.location.href = "/dashboard/student/profile"} variant="tertiary" prefixIcon="profile">
+                Profile
+              </Button>
+            </Column>
+          </Column>
+          <SheetFooter>
+            <Button fillWidth >Logout</Button>
+            <SheetClose asChild>
+              <Button fillWidth variant="secondary">Close</Button>
+            </SheetClose>
+          </SheetFooter>
         </Column>
-        <SheetFooter>
-          <Button fillWidth >Logout</Button>
-          <SheetClose asChild>
-            <Button fillWidth variant="secondary">Close</Button>
-          </SheetClose>
-        </SheetFooter>
-      </Column>
-        
+
       </SheetContent>
     </Sheet>
   )
