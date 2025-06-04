@@ -54,15 +54,15 @@ export default function InvoiceCards() {
   const ws = useRef<WebSocket | null>(null);
   const requestInterval = useRef<NodeJS.Timeout | null>(null);
   const options = {
-    method: 'save',
+    method: "save" as const,
     resolution: Resolution.MEDIUM,
     page: {
       margin: Margin.NONE,
       format: [90, 130],
-      orientation: 'portrait',
+      orientation: "portrait" as "portrait",
     },
     canvas: {
-      mimeType: 'image/jpeg',
+      mimeType: "image/jpeg" as "image/jpeg",
       qualityRatio: 1
     },
     overrides: {
