@@ -1,21 +1,33 @@
 "use client";
 import React, { useState, useRef, useEffect } from 'react'
-import {Button, Line, Flex, Dialog, Spinner, Card, Column, Heading, Media, Row, Tag, Text, TiltFx} from "@/once-ui/components";
-import StudentSheet from '@/components/studentSheet';
+import { Button, Line, Flex, Dialog, Spinner, Card, Column, Heading, Media, Row, Tag, Text, TiltFx } from "@/once-ui/components";
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+    Sheet,
+    SheetClose,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet"
+
 import { usePDF } from 'react-to-pdf';
 
 type Invoice = {
-  id: number;
-  invoice_number: string; 
-  student_id: string;
-  term: string;
-  academic_year: string;
-  issue_date: string;
-  due_date: string;
-  total_amount: string;
-  paid_amount: string;
-  balance: string;
-  status: string;
+    id: number;
+    invoice_number: string;
+    student_id: string;
+    term: string;
+    academic_year: string;
+    issue_date: string;
+    due_date: string;
+    total_amount: string;
+    paid_amount: string;
+    balance: string;
+    status: string;
 };
 
 const student = "2023002";
@@ -36,159 +48,157 @@ INSERT INTO transactions (id, type, title, description, fullDescription, date, i
 
 
 
-export default function InvoiceCards(){
-  const [Invoices, setInvoices] = useState<Invoice[]>([]);
-  const [loading, setLoading] = useState(true);
-  const ws = useRef<WebSocket | null>(null);
-  const requestInterval = useRef<NodeJS.Timeout | null>(null);
-  const { toPDF, targetRef } = usePDF({filename: 'page.pdf'});
+export default function InvoiceCards() {
+    const [Invoices, setInvoices] = useState<Invoice[]>([]);
+    const [loading, setLoading] = useState(true);
+    const ws = useRef<WebSocket | null>(null);
+    const requestInterval = useRef<NodeJS.Timeout | null>(null);
+    const { toPDF, targetRef } = usePDF({ filename: 'page.pdf' });
 
-  useEffect(() => {
-    ws.current = new WebSocket('wss://childheaded.zoofam.site/ws/invoices');
+    useEffect(() => {
+        ws.current = new WebSocket('wss://childheaded.zoofam.site/ws/invoices');
 
-    ws.current.onopen = () => {
-      setLoading(true); // Start loading
-      ws.current?.send(JSON.stringify({ type: 'get_Invoices' }));
-      requestInterval.current = setInterval(() => {
-        ws.current?.send(JSON.stringify({ type: 'get_Invoices' }));
-      }, 10000);
+        ws.current.onopen = () => {
+            setLoading(true); // Start loading
+            ws.current?.send(JSON.stringify({ type: 'get_Invoices' }));
+            requestInterval.current = setInterval(() => {
+                ws.current?.send(JSON.stringify({ type: 'get_Invoices' }));
+            }, 10000);
+        };
+
+        ws.current.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                if (Array.isArray(data)) {
+                    setInvoices(data);
+                    setLoading(false); // Data loaded
+                } else {
+                    setLoading(false); // Stop loading on unexpected data
+                }
+            } catch (error) {
+                setLoading(false); // Stop loading on error
+            }
+        };
+
+        ws.current.onerror = (error) => {
+            setLoading(false); // Stop loading on error
+        };
+
+        ws.current.onclose = () => {
+            if (requestInterval.current) clearInterval(requestInterval.current);
+            setLoading(false); // Stop loading on close
+        };
+
+        return () => {
+            if (ws.current) ws.current.close();
+            if (requestInterval.current) clearInterval(requestInterval.current);
+        };
+    }, []);
+
+    const AllInvoice = Invoices;
+
+    const [contents, setcontents] = useState(3);
+    const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null); // <--- use Invoice
+    const updateContents = () => {
+        setcontents(contents + 3)
+    }
+
+    const InvoiceList = [...AllInvoice]
+        .filter(Invoice => Invoice.student_id === student) // Filter by student ID
+        .sort((a, b) => new Date(b.due_date).getTime() - new Date(a.due_date).getTime())
+        .slice(0, contents);
+
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleCardClick = (Invoice: Invoice) => { // <--- use Invoice
+        setSelectedInvoice(Invoice);
+        setIsOpen(true);
     };
 
-    ws.current.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        if (Array.isArray(data)) {
-          setInvoices(data);
-          setLoading(false); // Data loaded
-        } else {
-          setLoading(false); // Stop loading on unexpected data
-        }
-      } catch (error) {
-        setLoading(false); // Stop loading on error
-      }
-    };
-
-    ws.current.onerror = (error) => {
-      setLoading(false); // Stop loading on error
-    };
-
-    ws.current.onclose = () => {
-      if (requestInterval.current) clearInterval(requestInterval.current);
-      setLoading(false); // Stop loading on close
-    };
-
-    return () => {
-      if (ws.current) ws.current.close();
-      if (requestInterval.current) clearInterval(requestInterval.current);
-    };
-  }, []);
-
-  const AllInvoice = Invoices;
-
-  const [contents, setcontents] = useState(3);
-  const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null); // <--- use Invoice
-  const updateContents = () => {
-    setcontents(contents+3)
-  }
-
-  const InvoiceList = [...AllInvoice]
-    .filter(Invoice => Invoice.student_id === student) // Filter by student ID
-    .sort((a, b) => new Date(b.due_date).getTime() - new Date(a.due_date).getTime())
-    .slice(0, contents);
-
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleCardClick = (Invoice: Invoice) => { // <--- use Invoice
-    setSelectedInvoice(Invoice);
-    setIsOpen(true);
-  };
-
-  return (
-    <>
-      <Column className='gap-5 position-relative items-center py-5 mb-2' radius="l-4" >
-        {loading ? (
-          <Row fillWidth center>
-            <Spinner size="l" />
-          </Row>
-        ) : (
-          InvoiceList.map((Invoice) =>(
-            <Row className='px-2' key={Invoice.id}>
-              <TiltFx onClick={() => handleCardClick(Invoice)}>
-                <Card background='neutral-alpha-strong' radius="l-4" direction="column" border="neutral-alpha-medium">
-                  <Column  className=''>
-                    <Row className='md:w-150 p-3'>
-                      <Media
-                        src="/images/nuchypId.jpg"
-                        unoptimized
-                        width={9}
-                        height={7}
-                        radius="l-4"
-                        border="neutral-alpha-medium"
-                      />
-                      <Column  maxWidth={30} className='m-2 pl-5'>
-                        <Row  className=' justify-between'>
-                          <Heading variant="heading-strong-s" as="h2">{Invoice.term}</Heading>
-                          <Tag variant="success" maxHeight={2} label={Invoice.academic_year} />
-                        </Row>
-                        <Row className='pt-2 opacity-60'>
-                          <Text variant="label-default-s">{Invoice.invoice_number}</Text>
-                        </Row>
-                        <Column fillHeight className='flex-column justify-end opacity-70'>
-                          <Flex className='justify-between'>
-                            <Text>{Invoice.paid_amount}</Text>
-                            <Text>{Invoice.total_amount}/=</Text>
-                          </Flex>
-                        </Column>
-                      </Column>
+    return (
+        <>
+            <Column className='gap-5 position-relative items-center py-5 mb-2' radius="l-4" >
+                {loading ? (
+                    <Row fillWidth center>
+                        <Spinner size="l" />
                     </Row>
-                  </Column>
-                </Card>
-              </TiltFx>
-            </Row>
-            
-          ))
-        )}
+                ) : (
+                    InvoiceList.map((Invoice) => (
+                        <Row className='px-2' key={Invoice.id}>
+                            <TiltFx onClick={() => handleCardClick(Invoice)}>
+                                <Card background='neutral-alpha-strong' radius="l-4" direction="column" border="neutral-alpha-medium">
+                                    <Column className=''>
+                                        <Row className='md:w-150 p-3'>
+                                            <Media
+                                                src="/images/nuchypId.jpg"
+                                                unoptimized
+                                                width={9}
+                                                height={7}
+                                                radius="l-4"
+                                                border="neutral-alpha-medium"
+                                            />
+                                            <Column maxWidth={30} className='m-2 pl-5'>
+                                                <Row className=' justify-between'>
+                                                    <Heading variant="heading-strong-s" as="h2">{Invoice.term}</Heading>
+                                                    <Tag variant="success" maxHeight={2} label={Invoice.academic_year} />
+                                                </Row>
+                                                <Row className='pt-2 opacity-60'>
+                                                    <Text variant="label-default-s">{Invoice.invoice_number}</Text>
+                                                </Row>
+                                                <Column fillHeight className='flex-column justify-end opacity-70'>
+                                                    <Flex className='justify-between'>
+                                                        <Text>{Invoice.paid_amount}</Text>
+                                                        <Text>{Invoice.total_amount}/=</Text>
+                                                    </Flex>
+                                                </Column>
+                                            </Column>
+                                        </Row>
+                                    </Column>
+                                </Card>
+                            </TiltFx>
+                        </Row>
 
-        {selectedInvoice && (
-          <Dialog
-            background='neutral-medium'
-            isOpen={isOpen}
-            onClose={() => setIsOpen(false)}
-            title={selectedInvoice.invoice_number}
-            className='mt-10 md:mt-10 md:max-w-xl max-w-full'
-            ref={targetRef}
-          >
-            <Line />
-            <Column fillWidth gap="16" marginTop="12">
-              <Media
-                src="/images/nuchypId.jpg"
-                alt={selectedInvoice.invoice_number}
-                border="neutral-alpha-medium"
-                height={18}
-                unoptimized
-                radius="l-4"
-              />
-              <Row fillWidth  className='justify-between'>
-                <Tag variant="success"  label={selectedInvoice.term} />
-                <Text className='opacity-70'>{selectedInvoice.total_amount}</Text>
-              </Row>
-              <Row>
-                {selectedInvoice.academic_year}
-              </Row>
-              <Row fillWidth className='opacity-70 justify-between font-bold'>
-                <Button size="s" weight="default" variant="secondary" onClick={() => toPDF()}>Download</Button>
-                <StudentSheet />
-              </Row>
+                    ))
+                )}
+
+                {selectedInvoice && (
+                    <Sheet>
+                        <SheetTrigger asChild>
+                            <Button variant="secondary">Open</Button>
+                        </SheetTrigger>
+                        <SheetContent>
+                            <SheetHeader>
+                                <SheetTitle>Edit profile</SheetTitle>
+                                <SheetDescription>
+                                    Make changes to your profile here. Click save when you&apos;re done.
+                                </SheetDescription>
+                            </SheetHeader>
+                            <div className="grid flex-1 auto-rows-min gap-6 px-4">
+                                <div className="grid gap-3">
+                                    <Label htmlFor="sheet-demo-name">Name</Label>
+                                    <Input id="sheet-demo-name" defaultValue="Pedro Duarte" />
+                                </div>
+                                <div className="grid gap-3">
+                                    <Label htmlFor="sheet-demo-username">Username</Label>
+                                    <Input id="sheet-demo-username" defaultValue="@peduarte" />
+                                </div>
+                            </div>
+                            <SheetFooter>
+                                <Button type="submit">Save changes</Button>
+                                <SheetClose asChild>
+                                    <Button variant="secondary">Close</Button>
+                                </SheetClose>
+                            </SheetFooter>
+                        </SheetContent>
+                    </Sheet>
+                )}
+
+                <Row fillWidth center>
+                    <form action={updateContents}>
+                        <Button type='submit'>Continue</Button>
+                    </form>
+                </Row>
             </Column>
-          </Dialog>
-        )}
-
-        <Row fillWidth center>
-          <form action={updateContents}>
-            <Button type='submit'>Continue</Button>
-          </form>
-        </Row>
-      </Column>
-    </>
-  )
+        </>
+    )
 }
