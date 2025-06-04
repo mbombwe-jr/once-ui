@@ -14,7 +14,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 
-import { usePDF } from 'react-to-pdf';
+import generatePDF, { Resolution, Margin } from 'react-to-pdf';
 
 type Invoice = {
   id: number;
@@ -53,7 +53,29 @@ export default function InvoiceCards() {
   const [loading, setLoading] = useState(true);
   const ws = useRef<WebSocket | null>(null);
   const requestInterval = useRef<NodeJS.Timeout | null>(null);
-  const { toPDF, targetRef } = usePDF({ filename: 'page.pdf' });
+  const options = {
+    method: 'save',
+    resolution: Resolution.MEDIUM,
+    page: {
+      margin: Margin.NONE,
+      format: 'A4',
+      orientation: 'portrait',
+    },
+    canvas: {
+      mimeType: 'image/jpeg',
+      qualityRatio: 1
+    },
+    overrides: {
+      pdf: {
+        compress: true
+      },
+      canvas: {
+        useCORS: true
+      }
+    },
+  };
+
+  const getTargetElement = () => document.getElementById('invoice');
 
   useEffect(() => {
     ws.current = new WebSocket('wss://childheaded.zoofam.site/ws/invoices');
@@ -166,12 +188,12 @@ export default function InvoiceCards() {
           <Sheet open={itisOpen} onOpenChange={(open) => {
             if (!open) setSelectedInvoice(null);
           }}>
-            <SheetContent className="w-[400px] sm:w-[540px] border-none">
+            <SheetContent className="w-[540px] sm:w-[2480px] border-none">
               <Column fillHeight fillWidth border='neutral-medium' background='neutral-medium' className='p-5'>
                 <SheetHeader>
                   <SheetTitle>Edupay</SheetTitle>
                 </SheetHeader>
-                <Column ref={targetRef}>
+                <Column id="invoice">
                   <Row className='justify-between'>
                     <Text variant="label-default-m">Invoice Number: {selectedInvoice.invoice_number}</Text>
                     <Text variant="label-default-m">Term: {selectedInvoice.term}</Text>
@@ -194,7 +216,7 @@ export default function InvoiceCards() {
                 </Column>
                 <SheetFooter>
                   <div className='flex justify-between'>
-                    <Button size="l" variant="secondary" onClick={() => toPDF()}>Download</Button>
+                    <Button size="l" variant="secondary" onClick={() => generatePDF(getTargetElement, options)}>Download</Button>
                     <Button size="l" variant="secondary">Pay Now</Button>
                   </div>
 
