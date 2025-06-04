@@ -16,7 +16,7 @@ function StudentsId(){
              src="/images/udsmLogo.png"
              unoptimized={true}
              width={4}
-             height={4}
+             
              alt="udsm Logo"
              className=''
             />

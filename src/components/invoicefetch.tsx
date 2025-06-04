@@ -1,6 +1,8 @@
 "use client";
 import React, { useState, useRef, useEffect } from 'react'
 import {Button, Line, Flex, Dialog, Spinner, Card, Column, Heading, Media, Row, Tag, Text, TiltFx} from "@/once-ui/components";
+import StudentSheet from '@/components/studentSheet';
+import html2pdf from 'html2pdf.js';
 
 type Invoice = {
   id: number;
@@ -32,11 +34,17 @@ INSERT INTO transactions (id, type, title, description, fullDescription, date, i
 (50, 'school', 'Student Portal Maintenance', 'Portal will be offline for upgrades this weekend.', 'Plan ahead: access your course materials and exam info before Friday.', '2024-08-01', 'https://images.seeklogo.com/logo-png/52/1/halo-pesa-tanzania-logo-png_seeklogo-527226.png', 0.00);
 */}
 
+
+
 export default function InvoiceCards(){
   const [Invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const ws = useRef<WebSocket | null>(null);
   const requestInterval = useRef<NodeJS.Timeout | null>(null);
+  const handleDownload = () => {
+    const element = document.getElementById('pdf-content');
+    html2pdf().from(element).save('styled.pdf');
+  };
 
   useEffect(() => {
     ws.current = new WebSocket('wss://childheaded.zoofam.site/ws/invoices');
@@ -151,6 +159,7 @@ export default function InvoiceCards(){
             onClose={() => setIsOpen(false)}
             title={selectedInvoice.invoice_number}
             className='mt-10 md:mt-10 md:max-w-xl max-w-full'
+            id="pdf-content"
           >
             <Line />
             <Column fillWidth gap="16" marginTop="12">
@@ -164,15 +173,14 @@ export default function InvoiceCards(){
               />
               <Row fillWidth  className='justify-between'>
                 <Tag variant="success"  label={selectedInvoice.term} />
-                <Text className='opacity-70'>{selectedInvoice.due_date}</Text>
+                <Text className='opacity-70'>{selectedInvoice.total_amount}</Text>
               </Row>
               <Row>
                 {selectedInvoice.academic_year}
               </Row>
-              <Row fillWidth center className='opacity-70 font-bold'>
-                <Row border="neutral-alpha-medium"  className='p-3 rounded-md'>
-                {"Tsh "+selectedInvoice.total_amount}
-                </Row>
+              <Row fillWidth className='opacity-70 justify-between font-bold'>
+                <Button size="s" weight="default" variant="secondary" onClick={handleDownload}>Download</Button>
+                <StudentSheet />
               </Row>
             </Column>
           </Dialog>
