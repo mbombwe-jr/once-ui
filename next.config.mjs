@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  // output: 'export',
   sassOptions: {
     compiler: "modern",
     silenceDeprecations: ["legacy-js-api"],
