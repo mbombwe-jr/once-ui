@@ -1,8 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from 'react'
-import { Button, Line, Flex, Dialog, Spinner, Card, Column, Heading, Media, Row, Tag, Text, TiltFx } from "@/once-ui/components";
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Button, Input, Line, Flex, Dialog, Spinner, Card, Column, Heading, Media, Row, Tag, Text, TiltFx } from "@/once-ui/components";
 import {
   Sheet,
   SheetClose,
@@ -15,6 +13,8 @@ import {
 } from "@/components/ui/sheet"
 
 import generatePDF, { Resolution, Margin } from 'react-to-pdf';
+import PaymentChoices from './paymentChoices';
+import { makePayment } from '@/lib/pay';
 
 type Invoice = {
   id: number;
@@ -51,6 +51,7 @@ INSERT INTO transactions (id, type, title, description, fullDescription, date, i
 export default function InvoiceCards() {
   const [Invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isbuttonloading, setisbuttonloading] = useState(false);
   const ws = useRef<WebSocket | null>(null);
   const requestInterval = useRef<NodeJS.Timeout | null>(null);
   const options = {
@@ -218,7 +219,33 @@ export default function InvoiceCards() {
                 <SheetFooter>
                   <div className='flex justify-between'>
                     <Button size="l" variant="secondary" onClick={() => generatePDF(getTargetElement, options)}>Download</Button>
-                    <Button size="l" variant="secondary">Pay Now</Button>
+                    <Sheet>
+                      <SheetTrigger asChild>
+                        <Button variant="secondary">Pay Now</Button>
+                      </SheetTrigger>
+                      <SheetContent className='border-none w-[400px] sm:w-[540px]' side="right">
+                        <Column fillHeight fillWidth background='neutral-medium' className='p-5'>
+                          <SheetHeader>
+                            <SheetTitle>Make Payment</SheetTitle>
+                          </SheetHeader>
+                          <PaymentChoices />
+                          <Row center className="pt-3">
+                            <form action={makePayment} className="text-white w-90 p-4 text-xl">
+                              <Input id="phoneNo" name='phoneNo' placeholder="Phone number eg. 255123456789" /> <br />
+                              <Input id="amount" name='amount' placeholder="Amount in tzs" /> <br />
+                              <center><Button loading={isbuttonloading} onClick={() => setisbuttonloading(true)} type="submit" name="submit" className="bg-blue-900 px-3 text-center">Payout</Button></center>
+                            </form>
+                          </Row>
+                          <SheetFooter>
+                            <Column center>
+                              <SheetClose asChild>
+                                <Button fillWidth variant="secondary">Close</Button>
+                              </SheetClose>
+                            </Column>
+                          </SheetFooter>
+                        </Column>
+                      </SheetContent>
+                    </Sheet>
                   </div>
 
                   <SheetClose asChild>

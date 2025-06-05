@@ -25,6 +25,7 @@
     "jspdf": "^3.0.1",
     "lucide-react": "^0.511.0",
     "next": "15.3.1",
+    "pnpm": "^10.11.1",
     "postcss": "^8.5.3",
     "postcss-preset-env": "^9.5.15",
     "prismjs": "^1.30.0",
@@ -38,6 +39,7 @@
     "sharp": "^0.33.4",
     "tailwind-merge": "^3.3.0",
     "tailwindcss": "^4.1.7",
+    "uuid": "^11.1.0",
     "ws": "^8.18.2"
   },
   "devDependencies": {
