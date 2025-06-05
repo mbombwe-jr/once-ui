@@ -189,7 +189,7 @@ export default function InvoiceCards() {
           <Sheet open={itisOpen} onOpenChange={(open) => {
             if (!open) setSelectedInvoice(null);
           }}>
-            <SheetContent className="w-[400px] sm:w-[540px] border-none">
+            <SheetContent className="border-none">
               <Column fillHeight fillWidth border='neutral-medium' background='neutral-medium' >
                 <SheetHeader>
                   <SheetTitle></SheetTitle>
@@ -223,7 +223,7 @@ export default function InvoiceCards() {
                       <SheetTrigger asChild>
                         <Button variant="secondary">Pay Now</Button>
                       </SheetTrigger>
-                      <SheetContent className='border-none w-[400px] sm:w-[540px]' side="right">
+                      <SheetContent className='border-none' side="right">
                         <Column fillHeight fillWidth background='neutral-medium' className='p-5'>
                           <SheetHeader>
                             <SheetTitle>Make Payment</SheetTitle>
